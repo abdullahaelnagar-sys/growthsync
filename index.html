@@ -179,6 +179,15 @@
     box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;
   }
   .meeting-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .meeting-head-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .meeting-head-actions{display:flex;gap:8px;}
+  .icon-btn{
+    display:flex;align-items:center;gap:5px;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.76rem;
+    cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);
+    padding:5px 10px;
+  }
+  .icon-btn:hover{background:var(--surface-alt);color:var(--text);}
+  .icon-btn.danger:hover{background:var(--clay-soft);color:var(--clay);border-color:var(--clay);}
   .meeting-date{
     font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.95rem;
     background:var(--harbor-soft);color:var(--harbor);padding:5px 12px;border-radius:8px;
@@ -246,6 +255,7 @@
     </div>
 
     <div class="panel" id="meetingForm" hidden>
+      <h3 id="meetingFormTitle" style="font-size:1rem;">New Meeting</h3>
       <div class="form-row" style="max-width:220px;">
         <label>Meeting date</label>
         <input type="date" id="meetingDate">
@@ -468,22 +478,62 @@
   var toggleFormBtn = document.getElementById('toggleFormBtn');
   var meetingForm = document.getElementById('meetingForm');
   var cancelBtn = document.getElementById('cancelMeetingBtn');
+  var meetingFormTitle = document.getElementById('meetingFormTitle');
+  var saveMeetingBtn = document.getElementById('saveMeetingBtn');
+  var editingMeetingId = null;
+
   toggleFormBtn.addEventListener('click', function(){
-    meetingForm.hidden = !meetingForm.hidden;
     if(!meetingForm.hidden){
-      document.getElementById('meetingDate').valueAsDate = new Date();
+      resetForm();
+      return;
     }
+    editingMeetingId = null;
+    meetingFormTitle.textContent = "New Meeting";
+    saveMeetingBtn.textContent = "Save Meeting";
+    doneItems = []; nextItems = []; agendaItems = [];
+    document.getElementById('meetingNotes').value = "";
+    renderChips();
+    meetingForm.hidden = false;
+    document.getElementById('meetingDate').valueAsDate = new Date();
   });
   cancelBtn.addEventListener('click', resetForm);
 
   function resetForm(){
     meetingForm.hidden = true;
+    editingMeetingId = null;
     doneItems = []; nextItems = []; agendaItems = [];
     document.getElementById('doneText').value = "";
     document.getElementById('nextText').value = "";
     document.getElementById('agendaText').value = "";
     document.getElementById('meetingNotes').value = "";
+    saveMeetingBtn.textContent = "Save Meeting";
+    meetingFormTitle.textContent = "New Meeting";
     renderChips();
+  }
+
+  function startEditMeeting(mt){
+    editingMeetingId = mt.id;
+    meetingFormTitle.textContent = "Edit Meeting — " + fmtDate(mt.date);
+    saveMeetingBtn.textContent = "Update Meeting";
+    agendaItems = (mt.agenda || []).map(function(a){ return {text:a.text, done:!!a.done}; });
+    var tasks = mt.tasks || [];
+    doneItems = tasks.filter(function(t){ return t.done; }).map(function(t){ return {text:t.text, owner:t.owner}; });
+    nextItems = tasks.filter(function(t){ return !t.done; }).map(function(t){ return {text:t.text, owner:t.owner, done:false}; });
+    document.getElementById('meetingNotes').value = mt.summary || "";
+    renderChips();
+    meetingForm.hidden = false;
+    document.getElementById('meetingDate').value = mt.date;
+    meetingForm.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function deleteMeeting(mt){
+    if(!confirm('Delete the meeting from ' + fmtDate(mt.date) + '? This cannot be undone.')) return;
+    if(db && mt.id){
+      db.doc('meetings/'+mt.id).delete().catch(function(){ alert('Could not delete, please try again'); });
+    } else {
+      meetings = meetings.filter(function(m){ return m !== mt; });
+      renderMeetings();
+    }
   }
 
   function renderChips(){
@@ -530,7 +580,7 @@
     t.value = ""; renderChips();
   });
 
-  document.getElementById('saveMeetingBtn').addEventListener('click', function(){
+  saveMeetingBtn.addEventListener('click', function(){
     var dateVal = document.getElementById('meetingDate').value;
     if(!dateVal){ alert('Please choose a meeting date'); return; }
     var allTasks = doneItems.map(function(it){ return {text:it.text, owner:it.owner, done:true}; })
@@ -540,15 +590,26 @@
       date: dateVal,
       agenda: agendaItems.slice(),
       tasks: allTasks,
-      summary: document.getElementById('meetingNotes').value.trim(),
-      createdAt: Date.now()
+      summary: document.getElementById('meetingNotes').value.trim()
     };
-    if(db){
-      db.collection('meetings').add(body).catch(function(){ alert('Could not save, please try again'); });
+
+    if(editingMeetingId){
+      var existing = meetings.find(function(m){ return m.id === editingMeetingId; });
+      if(db && editingMeetingId){
+        db.doc('meetings/'+editingMeetingId).update(body).catch(function(){ alert('Could not save changes, please try again'); });
+      } else if(existing){
+        Object.assign(existing, body);
+        renderMeetings();
+      }
     } else {
-      body._localId = 'local-'+Date.now();
-      meetings.unshift(body);
-      renderMeetings();
+      body.createdAt = Date.now();
+      if(db){
+        db.collection('meetings').add(body).catch(function(){ alert('Could not save, please try again'); });
+      } else {
+        body._localId = 'local-'+Date.now();
+        meetings.unshift(body);
+        renderMeetings();
+      }
     }
     resetForm();
   });
@@ -567,6 +628,7 @@
     }
     meetingsList.innerHTML = "";
     meetings.forEach(function(mt){
+      var mkey = mt.id || mt._localId;
       var card = document.createElement('div');
       card.className = 'meeting-card';
       var tasks = mt.tasks || [];
@@ -576,7 +638,7 @@
       if(agenda.length > 0){
         var agendaRows = agenda.map(function(a, idx){
           return '<div class="item-row'+(a.done?' is-done':'')+'">' +
-            '<input type="checkbox" '+(a.done?'checked':'')+' data-mid="'+mt.id+'" data-kind="agenda" data-idx="'+idx+'">' +
+            '<input type="checkbox" '+(a.done?'checked':'')+' data-mid="'+mkey+'" data-kind="agenda" data-idx="'+idx+'">' +
             '<span class="txt">'+escapeHtml(a.text)+'</span></div>';
         }).join('');
         agendaHtml = '<div class="agenda-block">' +
@@ -591,7 +653,7 @@
         var m = team[ownerId] || {};
         var rows = mine.map(function(x){
           return '<div class="item-row'+(x.t.done?' is-done':'')+'">' +
-            '<input type="checkbox" '+(x.t.done?'checked':'')+' data-mid="'+mt.id+'" data-kind="task" data-idx="'+x.idx+'">' +
+            '<input type="checkbox" '+(x.t.done?'checked':'')+' data-mid="'+mkey+'" data-kind="task" data-idx="'+x.idx+'">' +
             '<span class="txt">'+escapeHtml(x.t.text)+'</span></div>';
         }).join('');
         return '<div class="member-block">' +
@@ -601,17 +663,33 @@
       }).join('');
 
       card.innerHTML =
-        '<div class="meeting-head"><span class="meeting-date">'+fmtDate(mt.date)+'</span></div>' +
+        '<div class="meeting-head">' +
+          '<div class="meeting-head-left"><span class="meeting-date">'+fmtDate(mt.date)+'</span></div>' +
+          '<div class="meeting-head-actions">' +
+            '<button class="icon-btn" data-act="edit" data-mid="'+mkey+'" type="button">✎ Edit</button>' +
+            '<button class="icon-btn danger" data-act="delete" data-mid="'+mkey+'" type="button">🗑 Delete</button>' +
+          '</div>' +
+        '</div>' +
         agendaHtml +
         (blocksHtml || '<div class="item-row"><span class="txt" style="color:var(--text-muted)">No tasks logged for this meeting</span></div>') +
         (mt.summary ? '<div class="meeting-notes"><span class="lbl">Summary</span>'+escapeHtml(mt.summary)+'</div>' : '');
       meetingsList.appendChild(card);
     });
 
+    meetingsList.querySelectorAll('.icon-btn').forEach(function(b){
+      b.addEventListener('click', function(){
+        var mid = b.dataset.mid;
+        var mt = meetings.find(function(m){ return (m.id || m._localId) === mid; });
+        if(!mt) return;
+        if(b.dataset.act === 'edit') startEditMeeting(mt);
+        else deleteMeeting(mt);
+      });
+    });
+
     meetingsList.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
       cb.addEventListener('change', function(){
         var mid = cb.dataset.mid, idx = parseInt(cb.dataset.idx,10), kind = cb.dataset.kind;
-        var mt = meetings.find(function(m){ return m.id===mid; });
+        var mt = meetings.find(function(m){ return (m.id || m._localId)===mid; });
         if(!mt) return;
         var field = kind === 'agenda' ? 'agenda' : 'tasks';
         mt[field][idx].done = cb.checked;
