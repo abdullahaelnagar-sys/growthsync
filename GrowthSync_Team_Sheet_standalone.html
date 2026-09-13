@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrowthSync Team Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<!-- Firebase is loaded dynamically from the app script below (with a timeout),
+     so a slow or blocked connection to Google's servers never holds up the page itself. -->
+<style>
+  :root{
+    --paper:#F1F4EF;
+    --surface:#FFFFFF;
+    --surface-alt:#E7EDE4;
+    --text:#122019;
+    --text-muted:#5B6A61;
+    --border:#D7DED2;
+    --moss:#2F6B4F;
+    --moss-deep:#1F4A36;
+    --moss-soft:#DEEBE3;
+    --harbor:#2C5F72;
+    --harbor-soft:#DCEAEE;
+    --clay:#B0562F;
+    --clay-soft:#F3E1D5;
+    --shadow: 0 1px 2px rgba(18,32,25,.06), 0 8px 24px -12px rgba(18,32,25,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0E1B15;
+      --surface:#16261F;
+      --surface-alt:#1C2E25;
+      --text:#E9EFEA;
+      --text-muted:#93A69B;
+      --border:#2A4238;
+      --moss:#5FB081;
+      --moss-deep:#7CC496;
+      --moss-soft:#1E3A2A;
+      --harbor:#7EC0D6;
+      --harbor-soft:#173139;
+      --clay:#E6935F;
+      --clay-soft:#3A2A1E;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1B15;
+    --surface:#16261F;
+    --surface-alt:#1C2E25;
+    --text:#E9EFEA;
+    --text-muted:#93A69B;
+    --border:#2A4238;
+    --moss:#5FB081;
+    --moss-deep:#7CC496;
+    --moss-soft:#1E3A2A;
+    --harbor:#7EC0D6;
+    --harbor-soft:#173139;
+    --clay:#E6935F;
+    --clay-soft:#3A2A1E;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  html{color-scheme:light dark;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:'IBM Plex Sans',sans-serif;
+    padding:32px 20px 64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:36px;}
+
+  h1,h2,h3{font-family:'Manrope',sans-serif;margin:0;text-wrap:balance;}
+  .num{font-family:'IBM Plex Mono',monospace;}
+
+  /* header */
+  .head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .mark{
+    width:52px;height:52px;border-radius:14px;flex:none;
+    background:linear-gradient(155deg,var(--moss) 0%,var(--moss-deep) 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);
+  }
+  .mark svg{width:28px;height:28px;}
+  .brand h1{font-size:1.5rem;font-weight:800;color:var(--text);}
+  .brand p{margin:2px 0 0;color:var(--text-muted);font-size:.9rem;}
+  .status{
+    display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-muted);
+    background:var(--surface);border:1px solid var(--border);padding:7px 12px;border-radius:999px;
+  }
+  .status .dot{width:8px;height:8px;border-radius:50%;background:var(--moss);flex:none;}
+  .status.offline .dot{background:var(--clay);}
+
+  /* section headings */
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+  .sec-head h2{font-size:1.15rem;font-weight:800;}
+  .sec-head .sub{color:var(--text-muted);font-size:.85rem;margin-top:2px;}
+
+  /* team grid */
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);
+  }
+  .member-top{display:flex;align-items:center;gap:12px;}
+  .avatar{
+    width:44px;height:44px;border-radius:12px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Manrope',sans-serif;font-weight:800;font-size:1.05rem;color:#fff;
+  }
+  .member-id{flex:1;min-width:0;}
+  .member-name-row{display:flex;align-items:center;gap:6px;}
+  .name-input{
+    font-family:'Manrope',sans-serif;font-weight:800;font-size:1.02rem;color:var(--text);
+    background:transparent;border:none;border-bottom:1px dashed transparent;padding:1px 2px;
+    width:100%;min-width:0;
+  }
+  .name-input:hover, .name-input:focus{border-bottom-color:var(--border);outline:none;}
+  .name-input::placeholder{color:var(--text-muted);font-weight:600;}
+  .role-chip{
+    display:inline-block;margin-top:2px;font-size:.72rem;font-weight:600;color:var(--moss-deep);
+    background:var(--moss-soft);padding:3px 9px;border-radius:999px;
+  }
+  .field-label{font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.03em;margin:0 0 6px;text-transform:uppercase;}
+  .hint-inline{text-transform:none;font-weight:500;letter-spacing:0;opacity:.8;}
+  .edit-box{
+    width:100%;resize:vertical;min-height:44px;font-family:inherit;font-size:.85rem;line-height:1.55;
+    background:var(--surface-alt);border:1px solid var(--border);border-radius:10px;padding:9px 11px;color:var(--text);
+  }
+  .edit-box:focus{outline:2px solid var(--moss);outline-offset:1px;}
+  .save-hint{font-size:.68rem;color:var(--moss-deep);height:14px;transition:opacity .3s;opacity:0;text-align:end;}
+
+  /* meetings */
+  .btn{
+    font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;
+    border-radius:10px;border:1px solid transparent;padding:9px 16px;transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--moss);color:#fff;}
+  .btn-primary:hover{background:var(--moss-deep);}
+  .btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text);}
+  .btn-ghost:hover{background:var(--surface-alt);}
+  .btn-sm{padding:6px 11px;font-size:.78rem;border-radius:8px;}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px;
+  }
+  .form-row{display:flex;flex-direction:column;gap:6px;}
+  .form-row label{font-size:.78rem;font-weight:700;color:var(--text-muted);}
+  input[type="date"], textarea, input[type="text"], select{
+    font-family:inherit;font-size:.87rem;color:var(--text);background:var(--surface-alt);
+    border:1px solid var(--border);border-radius:9px;padding:8px 10px;
+  }
+  input[type="date"]{width:fit-content;}
+  .task-adder{display:flex;gap:8px;flex-wrap:wrap;}
+  .task-adder input[type="text"]{flex:1;min-width:160px;}
+  .task-adder select{min-width:150px;}
+  .chip-list{display:flex;flex-wrap:wrap;gap:8px;}
+  .task-chip{
+    display:flex;align-items:center;gap:8px;background:var(--surface-alt);border:1px solid var(--border);
+    padding:6px 12px 6px 6px;border-radius:999px;font-size:.8rem;
+  }
+  .task-chip .who{font-weight:700;color:var(--harbor);font-size:.74rem;}
+  .task-chip button{
+    border:none;background:var(--border);color:var(--text);width:18px;height:18px;border-radius:50%;
+    cursor:pointer;font-size:.7rem;line-height:1;display:flex;align-items:center;justify-content:center;
+  }
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+
+  .meetings-list{display:flex;flex-direction:column;gap:14px;}
+  .meeting-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;
+  }
+  .meeting-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .meeting-date{
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.95rem;
+    background:var(--harbor-soft);color:var(--harbor);padding:5px 12px;border-radius:8px;
+  }
+  .item-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+  .item-row:last-child{border-bottom:none;}
+  .item-row .txt{flex:1;line-height:1.5;}
+  .item-row .owner{font-size:.72rem;color:var(--harbor);font-weight:700;white-space:nowrap;}
+  .item-row.is-done .txt{text-decoration:line-through;color:var(--text-muted);}
+  .item-row input[type="checkbox"]{margin-top:3px;accent-color:var(--moss);width:15px;height:15px;flex:none;}
+  .meeting-notes{font-size:.83rem;color:var(--text);background:var(--surface-alt);border-radius:10px;padding:10px 12px;line-height:1.6;}
+  .meeting-notes .lbl{font-size:.68rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:4px;}
+  .member-block{display:flex;flex-direction:column;gap:8px;}
+  .member-block + .member-block{margin-top:14px;}
+  .member-block-title{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:700;font-family:'Manrope',sans-serif;}
+  .member-block-title .swatch{width:10px;height:10px;border-radius:3px;flex:none;}
+  .agenda-block{
+    background:var(--harbor-soft);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;
+  }
+  .agenda-block .member-block-title{color:var(--harbor);}
+  .agenda-block .item-row{border-bottom-color:rgba(0,0,0,.08);}
+  .empty-state{
+    border:1px dashed var(--border);border-radius:16px;padding:36px 20px;text-align:center;color:var(--text-muted);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .empty-state strong{color:var(--text);font-family:'Manrope',sans-serif;}
+
+  footer{color:var(--text-muted);font-size:.75rem;text-align:center;padding-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="head">
+    <div class="brand">
+      <div class="mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 16L9.5 9.5L14 14L21 6" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6H21V12" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <h1>GrowthSync</h1>
+        <p>Team roster & meeting tracker — marketing consultancy</p>
+      </div>
+    </div>
+    <div class="status offline" id="dbStatus"><span class="dot"></span><span id="dbStatusText">Connecting to database…</span></div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2>Team</h2>
+        <div class="sub">Roles, job descriptions, capabilities, and the tasks tied to each person. Click any editable field to update it.</div>
+      </div>
+    </div>
+    <div class="team-grid" id="teamGrid"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2>Meeting Log</h2>
+        <div class="sub">Tasks completed since the last meeting, and tasks due before the next one.</div>
+      </div>
+      <button class="btn btn-primary" id="toggleFormBtn">+ New Meeting</button>
+    </div>
+
+    <div class="panel" id="meetingForm" hidden>
+      <div class="form-row" style="max-width:220px;">
+        <label>Meeting date</label>
+        <input type="date" id="meetingDate">
+      </div>
+
+      <div class="form-row">
+        <label>☑ Agenda</label>
+        <div class="task-adder">
+          <input type="text" id="agendaText" placeholder="Add an agenda item…">
+          <button class="btn btn-ghost btn-sm" id="addAgendaBtn" type="button">Add</button>
+        </div>
+        <div class="chip-list" id="agendaChips"></div>
+      </div>
+
+      <div class="two-col">
+        <div class="form-row">
+          <label>✔ Tasks completed since the last meeting</label>
+          <div class="task-adder">
+            <input type="text" id="doneText" placeholder="Type a task…">
+            <select id="doneOwner"></select>
+            <button class="btn btn-ghost btn-sm" id="addDoneBtn" type="button">Add</button>
+          </div>
+          <div class="chip-list" id="doneChips"></div>
+        </div>
+        <div class="form-row">
+          <label>◷ Tasks due before the next meeting</label>
+          <div class="task-adder">
+            <input type="text" id="nextText" placeholder="Type a task…">
+            <select id="nextOwner"></select>
+            <button class="btn btn-ghost btn-sm" id="addNextBtn" type="button">Add</button>
+          </div>
+          <div class="chip-list" id="nextChips"></div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Meeting summary</label>
+        <textarea id="meetingNotes" rows="2" placeholder="Short recap of what this meeting covered…"></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" id="saveMeetingBtn">Save Meeting</button>
+        <button class="btn btn-ghost" id="cancelMeetingBtn" type="button">Cancel</button>
+      </div>
+    </div>
+
+    <div class="meetings-list" id="meetingsList"></div>
+  </section>
+
+  <footer>GrowthSync · Changes save automatically and sync with the team</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ====================================================================
+  // PASTE YOUR FIREBASE CONFIG HERE — see the setup steps you were given.
+  // Firebase console → Project settings → General → Your apps → Web app
+  // ====================================================================
+  var firebaseConfig = {
+    apiKey: "AIzaSyAfBZOzRD5NvI_wSeeuNsOtV8l9o0v3gBE",
+    authDomain: "growthsync-99d62.firebaseapp.com",
+    projectId: "growthsync-99d62",
+    storageBucket: "growthsync-99d62.firebasestorage.app",
+    messagingSenderId: "8951319517",
+    appId: "1:8951319517:web:5d2433800caf3050a28434"
+  };
+  // ====================================================================
+
+  var TEAM_ORDER = ["founder","ops","dev","ai"];
+  var DEFAULTS = {
+    founder: {
+      name:"Rahma", roleShort:"Founder", roleTitle:"Founder & Head of Marketing Strategy",
+      color:"#2F6B4F",
+      desc:"Company founder, responsible for the overall vision, setting marketing strategy and ensuring it's executed, and distributing tasks across the team while managing it end to end.",
+      caps:["Strategic planning","Market & competitor analysis","Team leadership & decision-making","Building integrated marketing plans"],
+      tasks:["Set the monthly/quarterly marketing strategy for clients","Assign tasks to the team and track execution","Client follow-up meetings","Review campaign performance against goals","Develop new service offerings"],
+      ideas:""
+    },
+    ops: {
+      name:"", roleShort:"CFO / Operations Manager", roleTitle:"CFO & Operations Manager",
+      color:"#2C5F72",
+      desc:"Responsible for the company's financial and operational side: budgeting and cash flow, pricing and contracts, compliance, and day-to-day operational efficiency.",
+      caps:["Financial analysis & budgeting","Contract & vendor management","Campaign ROI tracking","Building internal systems & workflows"],
+      tasks:["Prepare the monthly/quarterly budget","Price services and proposals","Track invoicing and collections","Manage client and vendor contracts","Financial performance reporting","Set internal policies and SOPs"],
+      ideas:""
+    },
+    dev: {
+      name:"Abdulrahman", roleShort:"Technical Solutions", roleTitle:"Developer — Technical Solutions & Web",
+      color:"#7A5C2E",
+      desc:"Responsible for the company's and clients' technical solutions, and for building and maintaining websites.",
+      caps:["Web development (front-end / back-end)","Custom technical solutions for clients","Tracking & analytics tool integration","Website maintenance & security"],
+      tasks:["Build and update client and company websites","Install tracking tools (Pixel, GA4)","Resolve urgent technical issues","Improve site speed & performance (technical SEO)"],
+      ideas:""
+    },
+    ai: {
+      name:"Abdulrahman", roleShort:"AI Solutions", roleTitle:"AI Solutions Lead",
+      color:"#5B4A8A",
+      desc:"Responsible for all AI-based solutions and tools within the company and for clients.",
+      caps:["Process automation with AI","Building AI tools & bots","AI-driven data analysis","Integrating AI tools into the marketing workflow"],
+      tasks:["Build workflow automations (auto-replies, lead scoring)","Develop AI tools for content & analysis","Evaluate new usable AI tools","Support the team with AI-based solutions"],
+      ideas:""
+    }
+  };
+
+  var team = {}; // live state, id -> data
+  TEAM_ORDER.forEach(function(id){ team[id] = Object.assign({}, DEFAULTS[id]); });
+
+  var teamGrid = document.getElementById('teamGrid');
+  var meetingsList = document.getElementById('meetingsList');
+  var doneOwnerSel = document.getElementById('doneOwner');
+  var nextOwnerSel = document.getElementById('nextOwner');
+  var doneItems = [];
+  var nextItems = [];
+  var agendaItems = [];
+  var meetings = [];
+  var db = null;
+
+  function ownerLabel(id){
+    var m = team[id];
+    if(!m) return id;
+    var nm = (m.name||"").trim();
+    return nm ? (nm + " · " + m.roleShort) : m.roleShort;
+  }
+
+  function initials(name, roleShort){
+    var s = (name||roleShort||"").trim();
+    return s.slice(0,1).toUpperCase() || "?";
+  }
+
+  function renderTeam(){
+    teamGrid.innerHTML = "";
+    TEAM_ORDER.forEach(function(id){
+      var m = team[id];
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div class="member-top">' +
+          '<div class="avatar" style="background:'+m.color+'">'+initials(m.name,m.roleShort)+'</div>' +
+          '<div class="member-id">' +
+            '<div class="member-name-row"><input class="name-input" data-id="'+id+'" placeholder="Enter name…" value="'+(m.name||'')+'"></div>' +
+            '<span class="role-chip">'+m.roleShort+' · '+m.roleTitle+'</span>' +
+          '</div>' +
+        '</div>' +
+        '<div><p class="field-label">Job Description</p><textarea class="edit-box" data-id="'+id+'" data-field="desc" rows="3">'+escapeHtml(m.desc)+'</textarea></div>' +
+        '<div><p class="field-label">Capabilities <span class="hint-inline">(one per line)</span></p><textarea class="edit-box" data-id="'+id+'" data-field="caps" rows="4">'+m.caps.map(escapeHtml).join('\n')+'</textarea></div>' +
+        '<div><p class="field-label">Related Tasks <span class="hint-inline">(one per line)</span></p><textarea class="edit-box" data-id="'+id+'" data-field="tasks" rows="5">'+m.tasks.map(escapeHtml).join('\n')+'</textarea></div>' +
+        '<div><p class="field-label">Ideas & Notes</p><textarea class="edit-box" data-id="'+id+'" data-field="ideas" rows="3" placeholder="Ideas, discussion topics, or notes for this person…">'+escapeHtml(m.ideas||'')+'</textarea></div>' +
+        '<div class="save-hint" data-hint="'+id+'"></div>';
+      teamGrid.appendChild(card);
+    });
+
+    teamGrid.querySelectorAll('.name-input').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        var id = inp.dataset.id;
+        team[id].name = inp.value;
+        writeTeam(id, {name: inp.value});
+        renderOwnerSelects();
+        renderMeetings();
+      });
+    });
+    teamGrid.querySelectorAll('.edit-box').forEach(function(ta){
+      ta.addEventListener('change', function(){
+        var id = ta.dataset.id;
+        var field = ta.dataset.field;
+        var patch = {};
+        if(field === 'caps' || field === 'tasks'){
+          var arr = ta.value.split('\n').map(function(s){return s.trim();}).filter(function(s){return s.length > 0;});
+          team[id][field] = arr;
+          patch[field] = arr;
+        } else {
+          team[id][field] = ta.value;
+          patch[field] = ta.value;
+        }
+        writeTeam(id, patch);
+        flashHint(id);
+      });
+    });
+  }
+
+  function flashHint(id){
+    var el = document.querySelector('.save-hint[data-hint="'+id+'"]');
+    if(!el) return;
+    el.textContent = "Saved";
+    el.style.opacity = 1;
+    setTimeout(function(){ el.style.opacity = 0; }, 1400);
+  }
+
+  function renderOwnerSelects(){
+    [doneOwnerSel, nextOwnerSel].forEach(function(sel){
+      var current = sel.value;
+      sel.innerHTML = TEAM_ORDER.map(function(id){
+        return '<option value="'+id+'">'+ownerLabel(id)+'</option>';
+      }).join('');
+      if(current) sel.value = current;
+    });
+  }
+
+  function writeTeam(id, patch){
+    if(!db) return;
+    db.doc('team/'+id).set(Object.assign({}, team[id], patch)).catch(function(){});
+  }
+
+  function subscribeTeam(){
+    if(!db) return;
+    TEAM_ORDER.forEach(function(id){
+      db.doc('team/'+id).onSnapshot(function(snap){
+        if(snap.exists){
+          team[id] = Object.assign({}, DEFAULTS[id], snap.data());
+        }
+        renderTeam();
+        renderOwnerSelects();
+        renderMeetings();
+      }, function(){ /* keep local defaults on error */ });
+    });
+  }
+
+  // ---- meeting form ----
+  var toggleFormBtn = document.getElementById('toggleFormBtn');
+  var meetingForm = document.getElementById('meetingForm');
+  var cancelBtn = document.getElementById('cancelMeetingBtn');
+  toggleFormBtn.addEventListener('click', function(){
+    meetingForm.hidden = !meetingForm.hidden;
+    if(!meetingForm.hidden){
+      document.getElementById('meetingDate').valueAsDate = new Date();
+    }
+  });
+  cancelBtn.addEventListener('click', resetForm);
+
+  function resetForm(){
+    meetingForm.hidden = true;
+    doneItems = []; nextItems = []; agendaItems = [];
+    document.getElementById('doneText').value = "";
+    document.getElementById('nextText').value = "";
+    document.getElementById('agendaText').value = "";
+    document.getElementById('meetingNotes').value = "";
+    renderChips();
+  }
+
+  function renderChips(){
+    document.getElementById('agendaChips').innerHTML = agendaItems.map(function(it,i){
+      return '<span class="task-chip">'+escapeHtml(it.text)+'<button data-list="agenda" data-i="'+i+'">✕</button></span>';
+    }).join('');
+    document.getElementById('doneChips').innerHTML = doneItems.map(function(it,i){
+      return '<span class="task-chip"><span class="who">'+ownerLabel(it.owner)+'</span>'+escapeHtml(it.text)+'<button data-list="done" data-i="'+i+'">✕</button></span>';
+    }).join('');
+    document.getElementById('nextChips').innerHTML = nextItems.map(function(it,i){
+      return '<span class="task-chip"><span class="who">'+ownerLabel(it.owner)+'</span>'+escapeHtml(it.text)+'<button data-list="next" data-i="'+i+'">✕</button></span>';
+    }).join('');
+    document.querySelectorAll('.task-chip button').forEach(function(b){
+      b.addEventListener('click', function(){
+        var i = parseInt(b.dataset.i,10);
+        if(b.dataset.list==='done') doneItems.splice(i,1);
+        else if(b.dataset.list==='next') nextItems.splice(i,1);
+        else agendaItems.splice(i,1);
+        renderChips();
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+  }
+
+  document.getElementById('addAgendaBtn').addEventListener('click', function(){
+    var t = document.getElementById('agendaText');
+    if(!t.value.trim()) return;
+    agendaItems.push({text:t.value.trim(), done:false});
+    t.value = ""; renderChips();
+  });
+  document.getElementById('addDoneBtn').addEventListener('click', function(){
+    var t = document.getElementById('doneText');
+    if(!t.value.trim()) return;
+    doneItems.push({text:t.value.trim(), owner:doneOwnerSel.value});
+    t.value = ""; renderChips();
+  });
+  document.getElementById('addNextBtn').addEventListener('click', function(){
+    var t = document.getElementById('nextText');
+    if(!t.value.trim()) return;
+    nextItems.push({text:t.value.trim(), owner:nextOwnerSel.value, done:false});
+    t.value = ""; renderChips();
+  });
+
+  document.getElementById('saveMeetingBtn').addEventListener('click', function(){
+    var dateVal = document.getElementById('meetingDate').value;
+    if(!dateVal){ alert('Please choose a meeting date'); return; }
+    var allTasks = doneItems.map(function(it){ return {text:it.text, owner:it.owner, done:true}; })
+      .concat(nextItems.map(function(it){ return {text:it.text, owner:it.owner, done:false}; }));
+    if(allTasks.length===0 && agendaItems.length===0){ alert('Add at least one agenda item or task'); return; }
+    var body = {
+      date: dateVal,
+      agenda: agendaItems.slice(),
+      tasks: allTasks,
+      summary: document.getElementById('meetingNotes').value.trim(),
+      createdAt: Date.now()
+    };
+    if(db){
+      db.collection('meetings').add(body).catch(function(){ alert('Could not save, please try again'); });
+    } else {
+      body._localId = 'local-'+Date.now();
+      meetings.unshift(body);
+      renderMeetings();
+    }
+    resetForm();
+  });
+
+  function fmtDate(iso){
+    try{
+      var d = new Date(iso+'T00:00:00');
+      return d.toLocaleDateString('en-US',{day:'2-digit',month:'short',year:'numeric'});
+    }catch(e){ return iso; }
+  }
+
+  function renderMeetings(){
+    if(meetings.length===0){
+      meetingsList.innerHTML = '<div class="empty-state"><strong>No meetings logged yet</strong><span>Click "New Meeting" to log the first meeting and its tasks</span></div>';
+      return;
+    }
+    meetingsList.innerHTML = "";
+    meetings.forEach(function(mt){
+      var card = document.createElement('div');
+      card.className = 'meeting-card';
+      var tasks = mt.tasks || [];
+      var agenda = mt.agenda || [];
+
+      var agendaHtml = "";
+      if(agenda.length > 0){
+        var agendaRows = agenda.map(function(a, idx){
+          return '<div class="item-row'+(a.done?' is-done':'')+'">' +
+            '<input type="checkbox" '+(a.done?'checked':'')+' data-mid="'+mt.id+'" data-kind="agenda" data-idx="'+idx+'">' +
+            '<span class="txt">'+escapeHtml(a.text)+'</span></div>';
+        }).join('');
+        agendaHtml = '<div class="agenda-block">' +
+          '<div class="member-block-title">☑ Agenda</div>' +
+          agendaRows +
+        '</div>';
+      }
+
+      var blocksHtml = TEAM_ORDER.map(function(ownerId){
+        var mine = tasks.map(function(t,i){ return {t:t, idx:i}; }).filter(function(x){ return x.t.owner===ownerId; });
+        if(mine.length===0) return '';
+        var m = team[ownerId] || {};
+        var rows = mine.map(function(x){
+          return '<div class="item-row'+(x.t.done?' is-done':'')+'">' +
+            '<input type="checkbox" '+(x.t.done?'checked':'')+' data-mid="'+mt.id+'" data-kind="task" data-idx="'+x.idx+'">' +
+            '<span class="txt">'+escapeHtml(x.t.text)+'</span></div>';
+        }).join('');
+        return '<div class="member-block">' +
+          '<div class="member-block-title"><span class="swatch" style="background:'+(m.color||'#999')+'"></span>'+escapeHtml(ownerLabel(ownerId))+'</div>' +
+          rows +
+        '</div>';
+      }).join('');
+
+      card.innerHTML =
+        '<div class="meeting-head"><span class="meeting-date">'+fmtDate(mt.date)+'</span></div>' +
+        agendaHtml +
+        (blocksHtml || '<div class="item-row"><span class="txt" style="color:var(--text-muted)">No tasks logged for this meeting</span></div>') +
+        (mt.summary ? '<div class="meeting-notes"><span class="lbl">Summary</span>'+escapeHtml(mt.summary)+'</div>' : '');
+      meetingsList.appendChild(card);
+    });
+
+    meetingsList.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var mid = cb.dataset.mid, idx = parseInt(cb.dataset.idx,10), kind = cb.dataset.kind;
+        var mt = meetings.find(function(m){ return m.id===mid; });
+        if(!mt) return;
+        var field = kind === 'agenda' ? 'agenda' : 'tasks';
+        mt[field][idx].done = cb.checked;
+        if(db && mt.id){
+          var patch = {};
+          patch[field] = mt[field];
+          db.doc('meetings/'+mt.id).update(patch).catch(function(){});
+        } else {
+          renderMeetings();
+        }
+      });
+    });
+  }
+
+  function subscribeMeetings(){
+    if(!db) return;
+    db.collection('meetings').orderBy('date','desc').onSnapshot(function(snap){
+      meetings = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      renderMeetings();
+    }, function(){ /* leave list as-is */ });
+  }
+
+  function setStatus(ok, text){
+    var el = document.getElementById('dbStatus');
+    el.classList.toggle('offline', !ok);
+    document.getElementById('dbStatusText').textContent = text;
+  }
+
+  function loadScript(src, timeoutMs){
+    return new Promise(function(resolve, reject){
+      var done = false;
+      var el = document.createElement('script');
+      el.src = src;
+      var timer = setTimeout(function(){
+        if(done) return;
+        done = true;
+        reject(new Error('timed out loading ' + src));
+      }, timeoutMs || 10000);
+      el.onload = function(){
+        if(done) return;
+        done = true;
+        clearTimeout(timer);
+        resolve();
+      };
+      el.onerror = function(){
+        if(done) return;
+        done = true;
+        clearTimeout(timer);
+        reject(new Error('failed to load ' + src));
+      };
+      document.head.appendChild(el);
+    });
+  }
+
+  function boot(){
+    // The page itself (team cards, meeting form, everything) is fully rendered
+    // right here, synchronously — nothing below this point can block it from showing.
+    renderTeam();
+    renderOwnerSelects();
+    renderMeetings();
+
+    if(!firebaseConfig.apiKey || firebaseConfig.apiKey === "PASTE_ME"){
+      setStatus(false, "Not connected yet — paste your Firebase config near the top of this file");
+      return;
+    }
+
+    setStatus(false, "Connecting to database…");
+    loadScript("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js", 10000)
+      .then(function(){
+        return loadScript("https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js", 10000);
+      })
+      .then(function(){
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        setStatus(true, "Connected — changes are saved and shared with the team");
+        subscribeTeam();
+        subscribeMeetings();
+      })
+      .catch(function(e){
+        db = null;
+        setStatus(false, "Could not connect — check your internet connection (some networks block Google services)");
+      });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+</body>
+</html>
