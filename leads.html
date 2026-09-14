@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrowthSync — Lead Tracker</title>
+<!-- Firebase is loaded dynamically from the app script below (with a timeout),
+     so a slow or blocked connection to Google's servers never holds up the page itself. -->
+<style>
+  :root{
+    --bg:#0c1210;
+    --bg-elev:#121a16;
+    --bg-input:#0e1512;
+    --border:#233029;
+    --border-soft:#1c2621;
+    --ink:#eef2ef;
+    --sub:#8a978f;
+    --sub-dim:#5f6d66;
+    --accent:#7fd9a3;
+    --accent-strong:#5fcf8e;
+    --accent-soft-bg:#152520;
+    --accent-soft-text:#8fe3ac;
+    --danger-soft-bg:#2a1a18;
+    --danger-soft-text:#e59a8c;
+    --warn-soft-bg:#2a2317;
+    --warn-soft-text:#e6c07c;
+    --radius:16px;
+    --radius-sm:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* Sidebar */
+  .sidebar{
+    width:240px;
+    flex:none;
+    border-right:1px solid var(--border-soft);
+    padding:22px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;padding:0 6px 10px;}
+  .brand-icon{
+    width:40px;height:40px;border-radius:11px;flex:none;
+    background:linear-gradient(135deg,#8fe3ac,#5fcf8e);
+    display:flex;align-items:center;justify-content:center;
+    color:#0c1210;font-weight:800;font-size:16px;
+  }
+  .brand h1{font-size:16px;margin:0;font-weight:700;letter-spacing:-0.01em;color:var(--ink);}
+  .brand p{font-size:11px;color:var(--sub);margin:1px 0 0;}
+
+  .section-list{display:flex;flex-direction:column;gap:2px;flex:1;overflow-y:auto;}
+  .section-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 10px;border-radius:var(--radius-sm);
+    cursor:pointer;font-size:13.5px;color:var(--sub);
+    border:1px solid transparent;
+    gap:6px;
+  }
+  .section-item:hover{background:var(--bg-elev);color:var(--ink);}
+  .section-item.active{background:var(--accent-soft-bg);color:var(--accent-soft-text);border-color:var(--border);}
+  .section-name{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
+    outline:none;font-weight:600;
+  }
+  .section-count{font-size:11px;color:var(--sub-dim);flex:none;}
+  .section-item.active .section-count{color:var(--accent-soft-text);opacity:.75;}
+  .section-actions{display:none;gap:4px;flex:none;}
+  .section-item:hover .section-actions{display:flex;}
+  .icon-btn{
+    background:none;border:none;cursor:pointer;color:inherit;opacity:.6;
+    font-size:12px;padding:2px 4px;border-radius:4px;line-height:1;
+  }
+  .icon-btn:hover{opacity:1;background:rgba(255,255,255,.08);}
+
+  .add-section-btn{
+    margin-top:4px;
+    display:flex;align-items:center;gap:6px;
+    padding:10px 10px;border-radius:var(--radius-sm);
+    border:1px dashed var(--border);
+    background:none;color:var(--sub);font-size:13px;cursor:pointer;
+    width:100%;text-align:left;font-family:inherit;
+  }
+  .add-section-btn:hover{border-color:var(--accent);color:var(--accent-soft-text);}
+
+  .sync-note{
+    font-size:11px;color:var(--sub-dim);padding:10px 4px 0;
+    border-top:1px solid var(--border-soft);
+  }
+
+  /* Main */
+  .main{flex:1;padding:26px 34px 60px;overflow-y:auto;}
+  .top-bar{
+    display:flex;justify-content:flex-end;margin-bottom:22px;
+  }
+  .sync-pill{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--bg-elev);border:1px solid var(--border-soft);
+    padding:8px 14px;border-radius:999px;font-size:12.5px;color:var(--sub);
+  }
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;box-shadow:0 0 0 3px rgba(127,217,163,.15);}
+  .sync-pill.saving .sync-dot{background:var(--warn-soft-text);}
+  .sync-pill.error .sync-dot{background:var(--danger-soft-text);}
+
+  .main-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;flex-wrap:wrap;}
+  .main-header h2{font-size:21px;margin:0 0 4px;font-weight:700;color:var(--ink);}
+  .main-header .meta{font-size:12.5px;color:var(--sub);}
+  .header-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+  .btn{
+    font-family:inherit;font-size:13px;padding:9px 15px;border-radius:var(--radius-sm);
+    border:1px solid var(--border);background:var(--bg-elev);color:var(--ink);cursor:pointer;
+  }
+  .btn:hover{border-color:var(--sub-dim);}
+  .btn.primary{background:var(--accent);color:#0c1210;border-color:var(--accent);font-weight:700;}
+  .btn.primary:hover{background:var(--accent-strong);}
+  .btn.ghost{border-color:transparent;color:var(--sub);background:none;}
+  .btn.ghost:hover{color:var(--ink);background:var(--bg-elev);}
+
+  .search-bar{margin-bottom:18px;}
+  .search-bar input{
+    width:100%;max-width:340px;padding:9px 13px;border-radius:var(--radius-sm);
+    border:1px solid var(--border);font-family:inherit;font-size:13px;
+    background:var(--bg-input);color:var(--ink);
+  }
+  .search-bar input::placeholder{color:var(--sub-dim);}
+  .search-bar input:focus{outline:none;border-color:var(--accent);}
+
+  .empty-state{
+    text-align:center;padding:60px 20px;color:var(--sub);font-size:13.5px;
+    border:1px dashed var(--border);border-radius:var(--radius);
+  }
+
+  /* Lead card */
+  .leads-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:18px;align-items:start;
+  }
+  .lead-card{
+    border:1px solid var(--border);border-radius:var(--radius);
+    background:var(--bg-elev);overflow:hidden;
+  }
+  .lead-head{
+    display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;cursor:pointer;
+  }
+  .lead-head:hover{background:rgba(255,255,255,.015);}
+  .avatar{
+    width:42px;height:42px;border-radius:11px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:16px;color:#0c1210;
+  }
+  .lead-summary{flex:1;min-width:0;}
+  .lead-company{font-weight:700;font-size:16px;color:var(--ink);margin-bottom:6px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .badges-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .badge{
+    font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;white-space:nowrap;
+  }
+  .badge.interested-yes{background:var(--accent-soft-bg);color:var(--accent-soft-text);}
+  .badge.interested-no{background:var(--danger-soft-bg);color:var(--danger-soft-text);}
+  .badge.interested-unset{background:var(--border-soft);color:var(--sub);}
+  .badge.type-actual{background:var(--accent-soft-bg);color:var(--accent-soft-text);}
+  .badge.type-potential{background:var(--warn-soft-bg);color:var(--warn-soft-text);}
+  .stage-pill{font-size:11px;color:var(--sub);border:1px solid var(--border);padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  .chevron{flex:none;color:var(--sub-dim);font-size:12px;transition:transform .15s;margin-top:4px;}
+  .lead-card.open .chevron{transform:rotate(90deg);color:var(--sub);}
+  .lead-head-actions{flex:none;}
+
+  .lead-body{padding:2px 18px 18px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-top:14px;}
+  .field label{
+    font-size:10.5px;color:var(--sub);font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  }
+  .field .hint{font-weight:400;text-transform:none;letter-spacing:0;color:var(--sub-dim);}
+  .field input[type=text],.field input[type=email],.field input[type=url],.field select,.field textarea{
+    font-family:inherit;font-size:13.5px;padding:9px 11px;border-radius:var(--radius-sm);
+    border:1px solid var(--border);background:var(--bg-input);color:var(--ink);width:100%;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:var(--sub-dim);}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);}
+  .field textarea{resize:vertical;min-height:64px;font-family:inherit;}
+  .field select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%238a978f'><path d='M5.5 7.5l4.5 4.5 4.5-4.5'/></svg>");background-repeat:no-repeat;background-position:left 10px center;padding-left:30px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
+  @media (max-width:520px){.two-col{grid-template-columns:1fr;}}
+
+  .section-label{
+    font-size:10.5px;color:var(--sub);margin:20px 0 8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  }
+  .months-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .month-box{
+    display:flex;align-items:center;gap:7px;font-size:12px;
+    border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 9px;cursor:pointer;user-select:none;
+    color:var(--sub);background:var(--bg-input);
+  }
+  .month-box.checked{border-color:var(--accent);background:var(--accent-soft-bg);color:var(--accent-soft-text);font-weight:600;}
+  .month-box .box{width:14px;height:14px;flex:none;border:1.5px solid currentColor;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;}
+
+  .custom-fields{display:flex;flex-direction:column;gap:12px;}
+  .custom-field-row{display:flex;gap:8px;align-items:flex-end;}
+  .custom-field-row .field{flex:1;margin-top:0;}
+  .custom-field-row .icon-btn{margin-bottom:9px;}
+
+  .lead-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);}
+  .add-field-link{background:none;border:none;color:var(--sub);font-size:12px;cursor:pointer;font-family:inherit;padding:0;}
+  .add-field-link:hover{color:var(--accent-soft-text);}
+
+  .footer-note{margin-top:28px;text-align:center;font-size:11.5px;color:var(--sub-dim);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">↗</div>
+      <div>
+        <h1>GrowthSync</h1>
+        <p>Leads by industry</p>
+      </div>
+    </div>
+    <div class="section-list" id="sectionList"></div>
+    <button class="add-section-btn" id="addSectionBtn">+ New section</button>
+    <div class="sync-note" id="syncNote">Loading…</div>
+  </aside>
+
+  <main class="main">
+    <div class="top-bar">
+      <div class="sync-pill" id="syncPill">
+        <span class="sync-dot"></span>
+        <span id="syncPillText">Connecting to database…</span>
+      </div>
+    </div>
+
+    <div class="main-header">
+      <div>
+        <h2 id="sectionTitle"></h2>
+        <div class="meta" id="sectionMeta"></div>
+      </div>
+      <div class="header-actions">
+        <button class="btn ghost" id="addFieldSectionBtn">+ Add field to all leads</button>
+        <button class="btn primary" id="addLeadBtn">+ New lead</button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by company or contact name…">
+    </div>
+
+    <div id="leadsContainer" class="leads-grid"></div>
+    <div class="footer-note">GrowthSync · Changes save automatically and sync with the team</div>
+  </main>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ====================================================================
+// Same Firebase project as the GrowthSync team/meeting tracker page.
+// ====================================================================
+var firebaseConfig = {
+  apiKey: "AIzaSyAfBZOzRD5NvI_wSeeuNsOtV8l9o0v3gBE",
+  authDomain: "growthsync-99d62.firebaseapp.com",
+  projectId: "growthsync-99d62",
+  storageBucket: "growthsync-99d62.firebasestorage.app",
+  messagingSenderId: "8951319517",
+  appId: "1:8951319517:web:5d2433800caf3050a28434"
+};
+var db = null;
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const STAGE_OPTIONS = ['New lead','First contact','Qualified','Proposal sent','Negotiation','Closed won','On hold'];
+const AVATAR_COLORS = ['#7fd9a3','#6f9fd8','#d8a35f','#a980d8','#d87f9a','#5fcfc4'];
+
+let state = null;
+let activeSectionId = null;
+let searchTerm = '';
+let saveTimer = null;
+
+function uid(){ return Math.random().toString(36).slice(2,10); }
+
+function defaultState(){
+  const sec1 = uid(), sec2 = uid(), sec3 = uid();
+  return {
+    sections: [
+      { id: sec1, name: 'SaaS', customFields: [], leads: [] },
+      { id: sec2, name: 'Restaurants', customFields: [], leads: [] },
+      { id: sec3, name: 'Real Estate', customFields: [], leads: [] },
+    ]
+  };
+}
+
+function newLead(){
+  return {
+    id: uid(),
+    company: '',
+    contact: '',
+    email: '',
+    website: '',
+    stage: STAGE_OPTIONS[0],
+    interested: '',
+    type: 'potential',
+    notes: '',
+    monthly: Array(12).fill(false),
+    custom: {},
+    open: true,
+  };
+}
+
+function setSyncPill(mode, textOverride){
+  const pill = document.getElementById('syncPill');
+  const text = document.getElementById('syncPillText');
+  pill.className = 'sync-pill' + (mode === 'saving' ? ' saving' : mode === 'error' ? ' error' : '');
+  text.textContent = textOverride || (mode === 'saving'
+    ? 'Saving…'
+    : mode === 'error'
+      ? 'Could not save — check connection'
+      : 'Connected — changes are saved and shared with the team');
+  document.getElementById('syncNote').textContent = mode === 'saving' ? 'Saving…' : mode === 'error' ? 'Save failed' : 'Synced ✓';
+}
+
+// ---- render page immediately with local defaults; Firebase connects afterward ----
+function loadState(){
+  state = defaultState();
+  activeSectionId = state.sections[0] ? state.sections[0].id : null;
+  render();
+  connectFirebase();
+}
+
+function loadScript(src, timeoutMs){
+  return new Promise(function(resolve, reject){
+    var done = false;
+    var el = document.createElement('script');
+    el.src = src;
+    var timer = setTimeout(function(){
+      if(done) return;
+      done = true;
+      reject(new Error('timed out loading ' + src));
+    }, timeoutMs || 10000);
+    el.onload = function(){
+      if(done) return;
+      done = true;
+      clearTimeout(timer);
+      resolve();
+    };
+    el.onerror = function(){
+      if(done) return;
+      done = true;
+      clearTimeout(timer);
+      reject(new Error('failed to load ' + src));
+    };
+    document.head.appendChild(el);
+  });
+}
+
+function connectFirebase(){
+  setSyncPill('saving', 'Connecting to database…');
+  loadScript("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js", 10000)
+    .then(function(){
+      return loadScript("https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js", 10000);
+    })
+    .then(function(){
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      db.doc('leads/state').onSnapshot(function(snap){
+        if(snap.exists && snap.data() && snap.data().sections){
+          state = snap.data();
+        } else {
+          persist();
+        }
+        if(!activeSectionId || !state.sections.find(function(s){ return s.id === activeSectionId; })){
+          activeSectionId = state.sections[0] ? state.sections[0].id : null;
+        }
+        setSyncPill('ok');
+        render();
+      }, function(){
+        setSyncPill('error', 'Could not sync — check connection');
+      });
+    })
+    .catch(function(){
+      db = null;
+      setSyncPill('error', 'Offline — changes are only saved on this device');
+    });
+}
+
+function persist(){
+  if(!db){
+    setSyncPill('error', 'Offline — changes are only saved on this device');
+    return;
+  }
+  setSyncPill('saving');
+  db.doc('leads/state').set(state).then(function(){
+    setSyncPill('ok');
+  }).catch(function(){
+    setSyncPill('error');
+  });
+}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(persist, 500);
+}
+
+function getActiveSection(){
+  return state.sections.find(s => s.id === activeSectionId) || null;
+}
+
+function render(){
+  renderSidebar();
+  renderMain();
+}
+
+function renderSidebar(){
+  const list = document.getElementById('sectionList');
+  list.innerHTML = '';
+  state.sections.forEach(sec => {
+    const item = document.createElement('div');
+    item.className = 'section-item' + (sec.id === activeSectionId ? ' active' : '');
+    item.innerHTML = `
+      <span class="section-name" data-id="${sec.id}"></span>
+      <span class="section-count">${sec.leads.length}</span>
+      <span class="section-actions">
+        <button class="icon-btn" data-action="rename" title="Rename">✎</button>
+        <button class="icon-btn" data-action="delete" title="Delete section">✕</button>
+      </span>
+    `;
+    item.querySelector('.section-name').textContent = sec.name;
+    item.addEventListener('click', (e) => {
+      if(e.target.closest('[data-action]')) return;
+      activeSectionId = sec.id;
+      render();
+    });
+    item.querySelector('[data-action="rename"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      renameSection(sec);
+    });
+    item.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteSection(sec);
+    });
+    list.appendChild(item);
+  });
+}
+
+function renameSection(sec){
+  const name = prompt('New section name:', sec.name);
+  if(name && name.trim()){
+    sec.name = name.trim();
+    scheduleSave();
+    render();
+  }
+}
+
+function deleteSection(sec){
+  if(!confirm(`Delete section "${sec.name}" and all its leads?`)) return;
+  state.sections = state.sections.filter(s => s.id !== sec.id);
+  if(activeSectionId === sec.id){
+    activeSectionId = state.sections[0] ? state.sections[0].id : null;
+  }
+  scheduleSave();
+  render();
+}
+
+document.getElementById('addSectionBtn').addEventListener('click', () => {
+  const name = prompt('New section name (e.g. E-commerce):');
+  if(name && name.trim()){
+    const sec = { id: uid(), name: name.trim(), customFields: [], leads: [] };
+    state.sections.push(sec);
+    activeSectionId = sec.id;
+    scheduleSave();
+    render();
+  }
+});
+
+function renderMain(){
+  const sec = getActiveSection();
+  const title = document.getElementById('sectionTitle');
+  const meta = document.getElementById('sectionMeta');
+  const container = document.getElementById('leadsContainer');
+  container.innerHTML = '';
+
+  if(!sec){
+    title.textContent = 'No section yet';
+    meta.textContent = 'Add a new section from the sidebar to get started';
+    return;
+  }
+
+  title.textContent = sec.name;
+  const interestedCount = sec.leads.filter(l => l.interested === 'yes').length;
+  meta.textContent = `${sec.leads.length} leads · ${interestedCount} interested`;
+
+  const filtered = sec.leads.filter(l => {
+    if(!searchTerm) return true;
+    const t = searchTerm.toLowerCase();
+    return l.company.toLowerCase().includes(t) || l.contact.toLowerCase().includes(t);
+  });
+
+  if(filtered.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = sec.leads.length === 0
+      ? 'No leads in this section yet. Click "+ New lead" to start.'
+      : 'No leads match your search.';
+    container.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach((lead, idx) => container.appendChild(renderLeadCard(sec, lead, idx)));
+}
+
+function renderLeadCard(sec, lead, idx){
+  const card = document.createElement('div');
+  card.className = 'lead-card' + (lead.open ? ' open' : '');
+
+  const head = document.createElement('div');
+  head.className = 'lead-head';
+
+  const interestedBadge = lead.interested === 'yes'
+    ? '<span class="badge interested-yes">Interested</span>'
+    : lead.interested === 'no'
+      ? '<span class="badge interested-no">Not interested</span>'
+      : '<span class="badge interested-unset">Not set</span>';
+
+  const typeBadge = lead.type === 'actual'
+    ? '<span class="badge type-actual">Actual customer</span>'
+    : '<span class="badge type-potential">Potential lead</span>';
+
+  const initial = (lead.company || '?').trim().charAt(0).toUpperCase() || '?';
+  const color = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+
+  head.innerHTML = `
+    <div class="avatar" style="background:${color}">${initial}</div>
+    <div class="lead-summary">
+      <div class="lead-company">${escapeHtml(lead.company) || 'Unnamed company'}</div>
+      <div class="badges-row">
+        <span class="stage-pill">${escapeHtml(lead.stage) || '—'}</span>
+        ${interestedBadge}
+        ${typeBadge}
+      </div>
+    </div>
+    <span class="chevron">▶</span>
+    <span class="lead-head-actions">
+      <button class="icon-btn" data-action="delete-lead" title="Delete lead">✕</button>
+    </span>
+  `;
+  head.addEventListener('click', (e) => {
+    if(e.target.closest('[data-action]')) return;
+    lead.open = !lead.open;
+    render();
+  });
+  head.querySelector('[data-action="delete-lead"]').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if(confirm('Delete this lead?')){
+      sec.leads = sec.leads.filter(l => l.id !== lead.id);
+      scheduleSave();
+      render();
+    }
+  });
+
+  card.appendChild(head);
+
+  if(lead.open){
+    const body = document.createElement('div');
+    body.className = 'lead-body';
+
+    body.innerHTML = `
+      <div class="two-col">
+        <div class="field">
+          <label>Company name</label>
+          <input type="text" data-field="company" value="${escapeAttr(lead.company)}" placeholder="Company name">
+        </div>
+        <div class="field">
+          <label>Contact person</label>
+          <input type="text" data-field="contact" value="${escapeAttr(lead.contact)}" placeholder="Contact name">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label>Company email</label>
+          <input type="email" data-field="email" value="${escapeAttr(lead.email)}" placeholder="name@company.com">
+        </div>
+        <div class="field">
+          <label>Company website</label>
+          <input type="url" data-field="website" value="${escapeAttr(lead.website)}" placeholder="https://company.com">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label>Funnel stage</label>
+          <select data-field="stage">
+            ${STAGE_OPTIONS.map(s => `<option value="${escapeAttr(s)}" ${s===lead.stage?'selected':''}>${escapeHtml(s)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Interested?</label>
+          <select data-field="interested">
+            <option value="" ${lead.interested===''?'selected':''}>Not set</option>
+            <option value="yes" ${lead.interested==='yes'?'selected':''}>Interested</option>
+            <option value="no" ${lead.interested==='no'?'selected':''}>Not interested</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Lead type</label>
+        <select data-field="type">
+          <option value="potential" ${lead.type==='potential'?'selected':''}>Potential lead</option>
+          <option value="actual" ${lead.type==='actual'?'selected':''}>Actual customer</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <textarea data-field="notes" placeholder="Notes about this client…">${escapeHtml(lead.notes)}</textarea>
+      </div>
+
+      <div class="section-label">Monthly follow-up email</div>
+      <div class="months-grid" id="months-${lead.id}"></div>
+
+      ${sec.customFields.length ? `<div class="section-label">Additional fields</div><div class="custom-fields" id="custom-${lead.id}"></div>` : ''}
+
+      <div class="lead-footer">
+        <button class="add-field-link" data-action="add-field">+ Add a field to every lead in this section</button>
+        <span></span>
+      </div>
+    `;
+
+    body.querySelectorAll('[data-field]').forEach(el => {
+      el.addEventListener('change', () => {
+        lead[el.dataset.field] = el.value;
+        scheduleSave();
+        if(['company','stage','interested','type'].includes(el.dataset.field)){
+          render();
+        }
+      });
+    });
+
+    const monthsWrap = body.querySelector(`#months-${lead.id}`);
+    MONTHS.forEach((m, i) => {
+      const box = document.createElement('div');
+      box.className = 'month-box' + (lead.monthly[i] ? ' checked' : '');
+      box.innerHTML = `<span class="box">${lead.monthly[i] ? '✓' : ''}</span><span>${m}</span>`;
+      box.addEventListener('click', () => {
+        lead.monthly[i] = !lead.monthly[i];
+        scheduleSave();
+        render();
+      });
+      monthsWrap.appendChild(box);
+    });
+
+    if(sec.customFields.length){
+      const cfWrap = body.querySelector(`#custom-${lead.id}`);
+      sec.customFields.forEach(cf => {
+        const row = document.createElement('div');
+        row.className = 'custom-field-row';
+        row.innerHTML = `
+          <div class="field">
+            <label>${escapeHtml(cf.label)}</label>
+            <input type="text" value="${escapeAttr(lead.custom[cf.id] || '')}" placeholder="${escapeAttr(cf.label)}">
+          </div>
+          <button class="icon-btn" title="Remove this field from all leads">✕</button>
+        `;
+        const input = row.querySelector('input');
+        input.addEventListener('change', () => {
+          lead.custom[cf.id] = input.value;
+          scheduleSave();
+        });
+        row.querySelector('button').addEventListener('click', () => {
+          if(confirm(`Remove field "${cf.label}" from every lead in this section?`)){
+            sec.customFields = sec.customFields.filter(f => f.id !== cf.id);
+            sec.leads.forEach(l => delete l.custom[cf.id]);
+            scheduleSave();
+            render();
+          }
+        });
+        cfWrap.appendChild(row);
+      });
+    }
+
+    body.querySelector('[data-action="add-field"]').addEventListener('click', () => addCustomField(sec));
+
+    card.appendChild(body);
+  }
+
+  return card;
+}
+
+function addCustomField(sec){
+  const label = prompt('New field name (will be added to every lead in this section):');
+  if(label && label.trim()){
+    sec.customFields.push({ id: uid(), label: label.trim() });
+    scheduleSave();
+    render();
+  }
+}
+
+document.getElementById('addLeadBtn').addEventListener('click', () => {
+  const sec = getActiveSection();
+  if(!sec) return;
+  sec.leads.unshift(newLead());
+  scheduleSave();
+  render();
+});
+
+document.getElementById('addFieldSectionBtn').addEventListener('click', () => {
+  const sec = getActiveSection();
+  if(!sec) return;
+  addCustomField(sec);
+});
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchTerm = e.target.value.trim();
+  renderMain();
+});
+
+function escapeHtml(str){
+  return (str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', loadState);
+} else {
+  loadState();
+}
+})();
+</script>
+</body>
+</html>
