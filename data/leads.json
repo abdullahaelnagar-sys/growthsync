@@ -12,7 +12,9 @@
           "email": "",
           "website": "",
           "referrer": "Rahma",
-          "growthLeak": [],
+          "growthLeak": [
+            ""
+          ],
           "stage": "New lead",
           "interested": "",
           "type": "potential",
