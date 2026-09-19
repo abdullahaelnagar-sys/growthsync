@@ -12,6 +12,34 @@
       "customFields": [],
       "leads": [
         {
+          "id": "96126702",
+          "company": "Edu Market (edumarket.io)",
+          "contact": "",
+          "email": "",
+          "website": "https://edumarket.io",
+          "referrer": "Research (Instagram)",
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Egyptian consumer app (publisher: Raise Right for Information Technology) that helps parents discover and compare nurseries/schools, with ratings, curricula info, and exclusive tuition/service discounts, plus secure in-app payments. iOS app first released Aug 29, 2025 (current version 1.0.35). Could not confirm a named founder/CEO from public sources — needs manual verification. Instagram: instagram.com/edumarket.io.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
           "id": "a7dc41f1",
           "company": "Fincart (fincart.io)",
           "contact": "Mostafa Elmasry",
@@ -45,7 +73,106 @@
       "id": "5a90ec77",
       "name": "Real Estate",
       "customFields": [],
-      "leads": []
+      "leads": [
+        {
+          "id": "efed7f16",
+          "company": "El Mostakbal for Urban Development (Mostakbal City)",
+          "contact": "Essam Nassef (Chairman & Managing Director)",
+          "email": "",
+          "website": "",
+          "referrer": "Research (Instagram)",
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Master developer and owner of Mostakbal City, a 45M sqm / 11,000-acre mixed-use mega-development in East Cairo (New Cairo extension), founded 2006. Shareholders include Banque Misr, National Investment Bank, National Bank of Egypt, and Arab Contractors. Acts as master planner/land seller to sub-developers (Palm Hills, Hassan Allam, SODIC, Emaar Misr, Misr Italia, Tatweer Misr, etc.) who build the actual residential/commercial compounds inside the city. No confirmed official company website found in public search results — recommend verifying directly before outreach. Instagram: instagram.com/mostakbal_city_official.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        }
+      ]
+    },
+    {
+      "id": "460dd2fc",
+      "name": "Finance",
+      "customFields": [],
+      "leads": [
+        {
+          "id": "04faaba7",
+          "company": "Kuwait Finance House Egypt (KFH Egypt)",
+          "contact": "Hala Hatem Sadek (CEO & Board Member)",
+          "email": "",
+          "website": "https://www.eg.kfh.com",
+          "referrer": "Research (Instagram)",
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Egyptian Islamic bank, rebranded from Ahli United Bank Egypt to KFH Egypt in Feb 2025 following KFH Group's acquisition of Ahli United Bank (Bahrain) in 2022. Part of Kuwait Finance House, the world's second-largest Islamic bank, operating in 12 countries. Large enterprise/bank — likely a longer sales cycle, needs the right internal champion/department contact rather than the CEO directly. Instagram: instagram.com/kfhegypt.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        }
+      ]
+    },
+    {
+      "id": "4a98f385",
+      "name": "Education",
+      "customFields": [],
+      "leads": [
+        {
+          "id": "dc0ef426",
+          "company": "Al Hayah University in Cairo",
+          "contact": "",
+          "email": "",
+          "website": "",
+          "referrer": "Research (Instagram)",
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Egyptian private university established by presidential decree in Oct 2019, located in Cairo's Fifth Settlement (New Cairo). Offers engineering, business administration & international trade, physiotherapy, nursing, and construction technology — Bachelor's, diploma, Master's and PhD degrees. Could not confirm the current university president/rector's name or an official website from public search results — needs manual verification before outreach. Instagram: instagram.com/alhayah_university_in_cairo.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        }
+      ]
     }
   ]
 }
