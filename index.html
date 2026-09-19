@@ -1,785 +1,678 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GrowthSync Team Sheet</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<!-- Firebase is loaded dynamically from the app script below (with a timeout),
-     so a slow or blocked connection to Google's servers never holds up the page itself. -->
+<title>GrowthSync — Lead Tracker</title>
 <style>
   :root{
-    --paper:#F1F4EF;
-    --surface:#FFFFFF;
-    --surface-alt:#E7EDE4;
-    --text:#122019;
-    --text-muted:#5B6A61;
-    --border:#D7DED2;
-    --moss:#2F6B4F;
-    --moss-deep:#1F4A36;
-    --moss-soft:#DEEBE3;
-    --harbor:#2C5F72;
-    --harbor-soft:#DCEAEE;
-    --clay:#B0562F;
-    --clay-soft:#F3E1D5;
-    --shadow: 0 1px 2px rgba(18,32,25,.06), 0 8px 24px -12px rgba(18,32,25,.18);
+    --bg:#0c1210;
+    --bg-elev:#121a16;
+    --bg-input:#0e1512;
+    --border:#233029;
+    --border-soft:#1c2621;
+    --ink:#eef2ef;
+    --sub:#8a978f;
+    --sub-dim:#5f6d66;
+    --accent:#7fd9a3;
+    --accent-strong:#5fcf8e;
+    --accent-soft-bg:#152520;
+    --accent-soft-text:#8fe3ac;
+    --danger-soft-bg:#2a1a18;
+    --danger-soft-text:#e59a8c;
+    --warn-soft-bg:#2a2317;
+    --warn-soft-text:#e6c07c;
+    --radius:16px;
+    --radius-sm:10px;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --paper:#0E1B15;
-      --surface:#16261F;
-      --surface-alt:#1C2E25;
-      --text:#E9EFEA;
-      --text-muted:#93A69B;
-      --border:#2A4238;
-      --moss:#5FB081;
-      --moss-deep:#7CC496;
-      --moss-soft:#1E3A2A;
-      --harbor:#7EC0D6;
-      --harbor-soft:#173139;
-      --clay:#E6935F;
-      --clay-soft:#3A2A1E;
-      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.5);
-    }
-  }
-  :root[data-theme="dark"]{
-    --paper:#0E1B15;
-    --surface:#16261F;
-    --surface-alt:#1C2E25;
-    --text:#E9EFEA;
-    --text-muted:#93A69B;
-    --border:#2A4238;
-    --moss:#5FB081;
-    --moss-deep:#7CC496;
-    --moss-soft:#1E3A2A;
-    --harbor:#7EC0D6;
-    --harbor-soft:#173139;
-    --clay:#E6935F;
-    --clay-soft:#3A2A1E;
-    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -14px rgba(0,0,0,.5);
-  }
-
   *{box-sizing:border-box;}
-  html{color-scheme:light dark;}
+  html,body{margin:0;padding:0;}
   body{
-    margin:0;
-    background:var(--paper);
-    color:var(--text);
-    font-family:'IBM Plex Sans',sans-serif;
-    padding:32px 20px 64px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:36px;}
+  .app{display:flex;min-height:100vh;}
 
-  h1,h2,h3{font-family:'Manrope',sans-serif;margin:0;text-wrap:balance;}
-  .num{font-family:'IBM Plex Mono',monospace;}
+  .sidebar{
+    width:240px;flex:none;border-right:1px solid var(--border-soft);
+    padding:22px 14px;display:flex;flex-direction:column;gap:14px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;padding:0 6px 10px;}
+  .brand-icon{
+    width:40px;height:40px;border-radius:11px;flex:none;
+    background:linear-gradient(135deg,#8fe3ac,#5fcf8e);
+    display:flex;align-items:center;justify-content:center;color:#0c1210;font-weight:800;font-size:16px;
+  }
+  .brand h1{font-size:16px;margin:0;font-weight:700;letter-spacing:-0.01em;color:var(--ink);}
+  .brand p{font-size:11px;color:var(--sub);margin:1px 0 0;}
 
-  /* header */
-  .head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between;}
-  .brand{display:flex;align-items:center;gap:14px;}
-  .mark{
-    width:52px;height:52px;border-radius:14px;flex:none;
-    background:linear-gradient(155deg,var(--moss) 0%,var(--moss-deep) 100%);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:var(--shadow);
+  .section-list{display:flex;flex-direction:column;gap:2px;flex:1;overflow-y:auto;}
+  .section-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:13.5px;color:var(--sub);
+    border:1px solid transparent;gap:6px;
   }
-  .mark svg{width:28px;height:28px;}
-  .brand h1{font-size:1.5rem;font-weight:800;color:var(--text);}
-  .brand p{margin:2px 0 0;color:var(--text-muted);font-size:.9rem;}
-  .status{
-    display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-muted);
-    background:var(--surface);border:1px solid var(--border);padding:7px 12px;border-radius:999px;
-  }
-  .status .dot{width:8px;height:8px;border-radius:50%;background:var(--moss);flex:none;}
-  .status.offline .dot{background:var(--clay);}
+  .section-item:hover{background:var(--bg-elev);color:var(--ink);}
+  .section-item.active{background:var(--accent-soft-bg);color:var(--accent-soft-text);border-color:var(--border);}
+  .section-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;outline:none;font-weight:600;}
+  .section-count{font-size:11px;color:var(--sub-dim);flex:none;}
+  .section-item.active .section-count{color:var(--accent-soft-text);opacity:.75;}
+  .section-actions{display:none;gap:4px;flex:none;}
+  .section-item:hover .section-actions{display:flex;}
+  .icon-btn{background:none;border:none;cursor:pointer;color:inherit;opacity:.6;font-size:12px;padding:2px 4px;border-radius:4px;line-height:1;}
+  .icon-btn:hover{opacity:1;background:rgba(255,255,255,.08);}
 
-  /* section headings */
-  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
-  .sec-head h2{font-size:1.15rem;font-weight:800;}
-  .sec-head .sub{color:var(--text-muted);font-size:.85rem;margin-top:2px;}
+  .add-section-btn{
+    margin-top:4px;display:flex;align-items:center;gap:6px;padding:10px 10px;border-radius:var(--radius-sm);
+    border:1px dashed var(--border);background:none;color:var(--sub);font-size:13px;cursor:pointer;
+    width:100%;text-align:left;font-family:inherit;
+  }
+  .add-section-btn:hover{border-color:var(--accent);color:var(--accent-soft-text);}
 
-  /* team grid */
-  .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
-  .card{
-    background:var(--surface);border:1px solid var(--border);border-radius:16px;
-    padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);
+  .sidebar-footer{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    font-size:11px;color:var(--sub-dim);padding:10px 4px 0;border-top:1px solid var(--border-soft);
   }
-  .member-top{display:flex;align-items:center;gap:12px;}
-  .avatar{
-    width:44px;height:44px;border-radius:12px;flex:none;
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Manrope',sans-serif;font-weight:800;font-size:1.05rem;color:#fff;
-  }
-  .member-id{flex:1;min-width:0;}
-  .member-name-row{display:flex;align-items:center;gap:6px;}
-  .name-input{
-    font-family:'Manrope',sans-serif;font-weight:800;font-size:1.02rem;color:var(--text);
-    background:transparent;border:none;border-bottom:1px dashed transparent;padding:1px 2px;
-    width:100%;min-width:0;
-  }
-  .name-input:hover, .name-input:focus{border-bottom-color:var(--border);outline:none;}
-  .name-input::placeholder{color:var(--text-muted);font-weight:600;}
-  .role-chip{
-    display:inline-block;margin-top:2px;font-size:.72rem;font-weight:600;color:var(--moss-deep);
-    background:var(--moss-soft);padding:3px 9px;border-radius:999px;
-  }
-  .field-label{font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.03em;margin:0 0 6px;text-transform:uppercase;}
-  .hint-inline{text-transform:none;font-weight:500;letter-spacing:0;opacity:.8;}
-  .edit-box{
-    width:100%;resize:vertical;min-height:44px;font-family:inherit;font-size:.85rem;line-height:1.55;
-    background:var(--surface-alt);border:1px solid var(--border);border-radius:10px;padding:9px 11px;color:var(--text);
-  }
-  .edit-box:focus{outline:2px solid var(--moss);outline-offset:1px;}
-  .save-hint{font-size:.68rem;color:var(--moss-deep);height:14px;transition:opacity .3s;opacity:0;text-align:end;}
+  .sidebar-footer button{background:none;border:none;color:var(--sub);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:5px;font-family:inherit;padding:2px;}
+  .sidebar-footer button:hover{color:var(--ink);}
 
-  /* meetings */
-  .btn{
-    font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;
-    border-radius:10px;border:1px solid transparent;padding:9px 16px;transition:transform .12s ease;
+  .main{flex:1;padding:26px 34px 60px;overflow-y:auto;}
+  .top-bar{display:flex;justify-content:flex-end;margin-bottom:22px;}
+  .sync-pill{
+    display:inline-flex;align-items:center;gap:8px;background:var(--bg-elev);border:1px solid var(--border-soft);
+    padding:8px 14px;border-radius:999px;font-size:12.5px;color:var(--sub);cursor:pointer;
   }
-  .btn:active{transform:scale(.97);}
-  .btn-primary{background:var(--moss);color:#fff;}
-  .btn-primary:hover{background:var(--moss-deep);}
-  .btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text);}
-  .btn-ghost:hover{background:var(--surface-alt);}
-  .btn-sm{padding:6px 11px;font-size:.78rem;border-radius:8px;}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;box-shadow:0 0 0 3px rgba(127,217,163,.15);}
+  .sync-pill.saving .sync-dot{background:var(--warn-soft-text);}
+  .sync-pill.error .sync-dot{background:var(--danger-soft-text);}
+  .sync-pill.off .sync-dot{background:var(--sub-dim);box-shadow:none;}
 
-  .panel{
-    background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;
-    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px;
-  }
-  .form-row{display:flex;flex-direction:column;gap:6px;}
-  .form-row label{font-size:.78rem;font-weight:700;color:var(--text-muted);}
-  input[type="date"], textarea, input[type="text"], select{
-    font-family:inherit;font-size:.87rem;color:var(--text);background:var(--surface-alt);
-    border:1px solid var(--border);border-radius:9px;padding:8px 10px;
-  }
-  input[type="date"]{width:fit-content;}
-  .task-adder{display:flex;gap:8px;flex-wrap:wrap;}
-  .task-adder input[type="text"]{flex:1;min-width:160px;}
-  .task-adder select{min-width:150px;}
-  .chip-list{display:flex;flex-wrap:wrap;gap:8px;}
-  .task-chip{
-    display:flex;align-items:center;gap:8px;background:var(--surface-alt);border:1px solid var(--border);
-    padding:6px 12px 6px 6px;border-radius:999px;font-size:.8rem;
-  }
-  .task-chip .who{font-weight:700;color:var(--harbor);font-size:.74rem;}
-  .task-chip button{
-    border:none;background:var(--border);color:var(--text);width:18px;height:18px;border-radius:50%;
-    cursor:pointer;font-size:.7rem;line-height:1;display:flex;align-items:center;justify-content:center;
-  }
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+  .main-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:16px;flex-wrap:wrap;}
+  .main-header h2{font-size:21px;margin:0 0 4px;font-weight:700;color:var(--ink);}
+  .main-header .meta{font-size:12.5px;color:var(--sub);}
+  .header-actions{display:flex;gap:8px;flex-wrap:wrap;}
 
-  .meetings-list{display:flex;flex-direction:column;gap:14px;}
-  .meeting-card{
-    background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;
-    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;
-  }
-  .meeting-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-  .meeting-head-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .meeting-head-actions{display:flex;gap:8px;}
-  .icon-btn{
-    display:flex;align-items:center;gap:5px;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.76rem;
-    cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);
-    padding:5px 10px;
-  }
-  .icon-btn:hover{background:var(--surface-alt);color:var(--text);}
-  .icon-btn.danger:hover{background:var(--clay-soft);color:var(--clay);border-color:var(--clay);}
-  .meeting-date{
-    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.95rem;
-    background:var(--harbor-soft);color:var(--harbor);padding:5px 12px;border-radius:8px;
-  }
-  .item-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
-  .item-row:last-child{border-bottom:none;}
-  .item-row .txt{flex:1;line-height:1.5;}
-  .item-row .owner{font-size:.72rem;color:var(--harbor);font-weight:700;white-space:nowrap;}
-  .item-row.is-done .txt{text-decoration:line-through;color:var(--text-muted);}
-  .item-row input[type="checkbox"]{margin-top:3px;accent-color:var(--moss);width:15px;height:15px;flex:none;}
-  .meeting-notes{font-size:.83rem;color:var(--text);background:var(--surface-alt);border-radius:10px;padding:10px 12px;line-height:1.6;}
-  .meeting-notes .lbl{font-size:.68rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:4px;}
-  .member-block{display:flex;flex-direction:column;gap:8px;}
-  .member-block + .member-block{margin-top:14px;}
-  .member-block-title{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:700;font-family:'Manrope',sans-serif;}
-  .member-block-title .swatch{width:10px;height:10px;border-radius:3px;flex:none;}
-  .agenda-block{
-    background:var(--harbor-soft);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;
-  }
-  .agenda-block .member-block-title{color:var(--harbor);}
-  .agenda-block .item-row{border-bottom-color:rgba(0,0,0,.08);}
-  .empty-state{
-    border:1px dashed var(--border);border-radius:16px;padding:36px 20px;text-align:center;color:var(--text-muted);
-    display:flex;flex-direction:column;align-items:center;gap:10px;
-  }
-  .empty-state strong{color:var(--text);font-family:'Manrope',sans-serif;}
+  .btn{font-family:inherit;font-size:13px;padding:9px 15px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-elev);color:var(--ink);cursor:pointer;}
+  .btn:hover{border-color:var(--sub-dim);}
+  .btn.primary{background:var(--accent);color:#0c1210;border-color:var(--accent);font-weight:700;}
+  .btn.primary:hover{background:var(--accent-strong);}
+  .btn.ghost{border-color:transparent;color:var(--sub);background:none;}
+  .btn.ghost:hover{color:var(--ink);background:var(--bg-elev);}
 
-  footer{color:var(--text-muted);font-size:.75rem;text-align:center;padding-top:8px;}
+  .search-bar{margin-bottom:18px;}
+  .search-bar input{width:100%;max-width:340px;padding:9px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);font-family:inherit;font-size:13px;background:var(--bg-input);color:var(--ink);}
+  .search-bar input::placeholder{color:var(--sub-dim);}
+  .search-bar input:focus{outline:none;border-color:var(--accent);}
+
+  .empty-state{text-align:center;padding:60px 20px;color:var(--sub);font-size:13.5px;border:1px dashed var(--border);border-radius:var(--radius);}
+  .empty-state .btn{margin-top:14px;}
+
+  .leads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;align-items:start;}
+  .lead-card{border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-elev);overflow:hidden;}
+  .lead-head{display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;cursor:pointer;}
+  .lead-head:hover{background:rgba(255,255,255,.015);}
+  .avatar{width:42px;height:42px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#0c1210;}
+  .lead-summary{flex:1;min-width:0;}
+  .lead-company{font-weight:700;font-size:16px;color:var(--ink);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .badges-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;white-space:nowrap;}
+  .badge.interested-yes{background:var(--accent-soft-bg);color:var(--accent-soft-text);}
+  .badge.interested-no{background:var(--danger-soft-bg);color:var(--danger-soft-text);}
+  .badge.interested-unset{background:var(--border-soft);color:var(--sub);}
+  .badge.type-actual{background:var(--accent-soft-bg);color:var(--accent-soft-text);}
+  .badge.type-potential{background:var(--warn-soft-bg);color:var(--warn-soft-text);}
+  .stage-pill{font-size:11px;color:var(--sub);border:1px solid var(--border);padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  .chevron{flex:none;color:var(--sub-dim);font-size:12px;transition:transform .15s;margin-top:4px;}
+  .lead-card.open .chevron{transform:rotate(90deg);color:var(--sub);}
+  .lead-head-actions{flex:none;}
+
+  .lead-body{padding:2px 18px 18px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-top:14px;}
+  .field label{font-size:10.5px;color:var(--sub);font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+  .field input[type=text],.field input[type=email],.field input[type=url],.field input[type=password],.field select,.field textarea{
+    font-family:inherit;font-size:13.5px;padding:9px 11px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-input);color:var(--ink);width:100%;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:var(--sub-dim);}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);}
+  .field textarea{resize:vertical;min-height:64px;font-family:inherit;}
+  .field .field-hint{font-size:11px;color:var(--sub-dim);font-weight:400;text-transform:none;letter-spacing:0;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
+  @media (max-width:520px){.two-col{grid-template-columns:1fr;}}
+
+  .section-label{font-size:10.5px;color:var(--sub);margin:20px 0 8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+  .months-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .month-box{display:flex;align-items:center;gap:7px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 9px;cursor:pointer;user-select:none;color:var(--sub);background:var(--bg-input);}
+  .month-box.checked{border-color:var(--accent);background:var(--accent-soft-bg);color:var(--accent-soft-text);font-weight:600;}
+  .month-box .box{width:14px;height:14px;flex:none;border:1.5px solid currentColor;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;}
+
+  .custom-fields{display:flex;flex-direction:column;gap:12px;}
+  .custom-field-row{display:flex;gap:8px;align-items:flex-end;}
+  .custom-field-row .field{flex:1;margin-top:0;}
+  .custom-field-row .icon-btn{margin-bottom:9px;}
+
+  .lead-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);}
+  .add-field-link{background:none;border:none;color:var(--sub);font-size:12px;cursor:pointer;font-family:inherit;padding:0;}
+  .add-field-link:hover{color:var(--accent-soft-text);}
+
+  .footer-note{margin-top:28px;text-align:center;font-size:11.5px;color:var(--sub-dim);}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:50;}
+  .modal-overlay.show{display:flex;}
+  .modal{background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:440px;padding:26px;max-height:88vh;overflow-y:auto;}
+  .modal h3{margin:0 0 6px;font-size:17px;color:var(--ink);}
+  .modal p.desc{font-size:12.5px;color:var(--sub);margin:0 0 18px;line-height:1.6;}
+  .modal .field{margin-top:12px;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;}
+  .modal-error{background:var(--danger-soft-bg);color:var(--danger-soft-text);font-size:12px;padding:9px 11px;border-radius:var(--radius-sm);margin-top:14px;display:none;}
+  .modal-error.show{display:block;}
 </style>
 </head>
 <body>
-
-<div class="wrap">
-
-  <div class="head">
+<div class="app">
+  <aside class="sidebar">
     <div class="brand">
-      <div class="mark">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M3 16L9.5 9.5L14 14L21 6" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6H21V12" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
+      <div class="brand-icon">↗</div>
       <div>
         <h1>GrowthSync</h1>
-        <p>Team roster & meeting tracker — marketing consultancy</p>
+        <p>Leads by industry</p>
       </div>
     </div>
-    <div class="status offline" id="dbStatus"><span class="dot"></span><span id="dbStatusText">Connecting to database…</span></div>
+    <div class="section-list" id="sectionList"></div>
+    <button class="add-section-btn" id="addSectionBtn">+ New section</button>
+    <div class="sidebar-footer">
+      <span id="repoLabel">Not connected</span>
+      <button id="settingsBtn">⚙ Settings</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="top-bar">
+      <div class="sync-pill off" id="syncPill">
+        <span class="sync-dot"></span>
+        <span id="syncPillText">Not connected to GitHub</span>
+      </div>
+    </div>
+
+    <div class="main-header">
+      <div>
+        <h2 id="sectionTitle"></h2>
+        <div class="meta" id="sectionMeta"></div>
+      </div>
+      <div class="header-actions">
+        <button class="btn ghost" id="addFieldSectionBtn">+ Add field to all leads</button>
+        <button class="btn primary" id="addLeadBtn">+ New lead</button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by company or contact name…">
+    </div>
+
+    <div id="leadsContainer" class="leads-grid"></div>
+    <div class="footer-note">GrowthSync · Changes save straight to your team's GitHub repo</div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal">
+    <h3>Connect to GitHub</h3>
+    <p class="desc">GrowthSync stores all its data as a JSON file inside a GitHub repo, so every teammate who opens this page reads and writes the same file — no separate backend needed.</p>
+    <div class="field">
+      <label>Repo owner (user or org)</label>
+      <input type="text" id="cfgOwner" placeholder="e.g. abdullahaelnagar-sys">
+    </div>
+    <div class="field">
+      <label>Repository name</label>
+      <input type="text" id="cfgRepo" placeholder="e.g. growthsync">
+    </div>
+    <div class="field">
+      <label>Branch</label>
+      <input type="text" id="cfgBranch" placeholder="main" value="main">
+    </div>
+    <div class="field">
+      <label>Data file path</label>
+      <input type="text" id="cfgPath" placeholder="data/leads.json" value="data/leads.json">
+    </div>
+    <div class="field">
+      <label>Personal access token</label>
+      <input type="password" id="cfgToken" placeholder="github_pat_...">
+      <span class="field-hint">Fine-grained token, scoped only to this repo, with "Contents: Read and write" permission. Stored only in this browser.</span>
+    </div>
+    <div class="modal-error" id="cfgError"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="cfgCancel">Cancel</button>
+      <button class="btn primary" id="cfgSave">Connect</button>
+    </div>
   </div>
-
-  <section>
-    <div class="sec-head">
-      <div>
-        <h2>Team</h2>
-        <div class="sub">Roles, job descriptions, capabilities, and the tasks tied to each person. Click any editable field to update it.</div>
-      </div>
-    </div>
-    <div class="team-grid" id="teamGrid"></div>
-  </section>
-
-  <section>
-    <div class="sec-head">
-      <div>
-        <h2>Meeting Log</h2>
-        <div class="sub">Tasks completed since the last meeting, and tasks due before the next one.</div>
-      </div>
-      <button class="btn btn-primary" id="toggleFormBtn">+ New Meeting</button>
-    </div>
-
-    <div class="panel" id="meetingForm" hidden>
-      <h3 id="meetingFormTitle" style="font-size:1rem;">New Meeting</h3>
-      <div class="form-row" style="max-width:220px;">
-        <label>Meeting date</label>
-        <input type="date" id="meetingDate">
-      </div>
-
-      <div class="form-row">
-        <label>☑ Agenda</label>
-        <div class="task-adder">
-          <input type="text" id="agendaText" placeholder="Add an agenda item…">
-          <button class="btn btn-ghost btn-sm" id="addAgendaBtn" type="button">Add</button>
-        </div>
-        <div class="chip-list" id="agendaChips"></div>
-      </div>
-
-      <div class="two-col">
-        <div class="form-row">
-          <label>✔ Tasks completed since the last meeting</label>
-          <div class="task-adder">
-            <input type="text" id="doneText" placeholder="Type a task…">
-            <select id="doneOwner"></select>
-            <button class="btn btn-ghost btn-sm" id="addDoneBtn" type="button">Add</button>
-          </div>
-          <div class="chip-list" id="doneChips"></div>
-        </div>
-        <div class="form-row">
-          <label>◷ Tasks due before the next meeting</label>
-          <div class="task-adder">
-            <input type="text" id="nextText" placeholder="Type a task…">
-            <select id="nextOwner"></select>
-            <button class="btn btn-ghost btn-sm" id="addNextBtn" type="button">Add</button>
-          </div>
-          <div class="chip-list" id="nextChips"></div>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label>Meeting summary</label>
-        <textarea id="meetingNotes" rows="2" placeholder="Short recap of what this meeting covered…"></textarea>
-      </div>
-
-      <div style="display:flex;gap:10px;">
-        <button class="btn btn-primary" id="saveMeetingBtn">Save Meeting</button>
-        <button class="btn btn-ghost" id="cancelMeetingBtn" type="button">Cancel</button>
-      </div>
-    </div>
-
-    <div class="meetings-list" id="meetingsList"></div>
-  </section>
-
-  <footer>GrowthSync · Changes save automatically and sync with the team</footer>
 </div>
 
 <script>
-(function(){
-  "use strict";
+const CONFIG_KEY = 'growthsync-gh-config';
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const STAGE_OPTIONS = ['New lead','First contact','Qualified','Proposal sent','Negotiation','Closed won','On hold'];
+const AVATAR_COLORS = ['#7fd9a3','#6f9fd8','#d8a35f','#a980d8','#d87f9a','#5fcfc4'];
 
-  // ====================================================================
-  // PASTE YOUR FIREBASE CONFIG HERE — see the setup steps you were given.
-  // Firebase console → Project settings → General → Your apps → Web app
-  // ====================================================================
-  var firebaseConfig = {
-    apiKey: "AIzaSyAfBZOzRD5NvI_wSeeuNsOtV8l9o0v3gBE",
-    authDomain: "growthsync-99d62.firebaseapp.com",
-    projectId: "growthsync-99d62",
-    storageBucket: "growthsync-99d62.firebasestorage.app",
-    messagingSenderId: "8951319517",
-    appId: "1:8951319517:web:5d2433800caf3050a28434"
+let state = null;
+let fileSha = null;
+let gh = null;
+let activeSectionId = null;
+let searchTerm = '';
+let saveTimer = null;
+
+function uid(){ return Math.random().toString(36).slice(2,10); }
+
+function defaultState(){
+  const sec1 = uid(), sec2 = uid(), sec3 = uid();
+  return {
+    sections: [
+      { id: sec1, name: 'SaaS', customFields: [], leads: [] },
+      { id: sec2, name: 'Tech', customFields: [], leads: [] },
+      { id: sec3, name: 'Real Estate', customFields: [], leads: [] },
+    ]
   };
-  // ====================================================================
+}
 
-  var TEAM_ORDER = ["founder","ops","dev","ai"];
-  var DEFAULTS = {
-    founder: {
-      name:"Rahma", roleShort:"Founder", roleTitle:"Founder & Head of Marketing Strategy",
-      color:"#2F6B4F",
-      desc:"Company founder, responsible for the overall vision, setting marketing strategy and ensuring it's executed, and distributing tasks across the team while managing it end to end.",
-      caps:["Strategic planning","Market & competitor analysis","Team leadership & decision-making","Building integrated marketing plans"],
-      tasks:["Set the monthly/quarterly marketing strategy for clients","Assign tasks to the team and track execution","Client follow-up meetings","Review campaign performance against goals","Develop new service offerings"],
-      ideas:""
-    },
-    ops: {
-      name:"", roleShort:"CFO / Operations Manager", roleTitle:"CFO & Operations Manager",
-      color:"#2C5F72",
-      desc:"Responsible for the company's financial and operational side: budgeting and cash flow, pricing and contracts, compliance, and day-to-day operational efficiency.",
-      caps:["Financial analysis & budgeting","Contract & vendor management","Campaign ROI tracking","Building internal systems & workflows"],
-      tasks:["Prepare the monthly/quarterly budget","Price services and proposals","Track invoicing and collections","Manage client and vendor contracts","Financial performance reporting","Set internal policies and SOPs"],
-      ideas:""
-    },
-    dev: {
-      name:"Abdulrahman", roleShort:"Technical Solutions", roleTitle:"Developer — Technical Solutions & Web",
-      color:"#7A5C2E",
-      desc:"Responsible for the company's and clients' technical solutions, and for building and maintaining websites.",
-      caps:["Web development (front-end / back-end)","Custom technical solutions for clients","Tracking & analytics tool integration","Website maintenance & security"],
-      tasks:["Build and update client and company websites","Install tracking tools (Pixel, GA4)","Resolve urgent technical issues","Improve site speed & performance (technical SEO)"],
-      ideas:""
-    },
-    ai: {
-      name:"Abdulrahman", roleShort:"AI Solutions", roleTitle:"AI Solutions Lead",
-      color:"#5B4A8A",
-      desc:"Responsible for all AI-based solutions and tools within the company and for clients.",
-      caps:["Process automation with AI","Building AI tools & bots","AI-driven data analysis","Integrating AI tools into the marketing workflow"],
-      tasks:["Build workflow automations (auto-replies, lead scoring)","Develop AI tools for content & analysis","Evaluate new usable AI tools","Support the team with AI-based solutions"],
-      ideas:""
-    }
+function newLead(){
+  return {
+    id: uid(), company: '', contact: '', email: '', website: '',
+    stage: STAGE_OPTIONS[0], interested: '', type: 'potential', notes: '',
+    monthly: Array(12).fill(false), custom: {}, open: true,
   };
+}
 
-  var team = {}; // live state, id -> data
-  TEAM_ORDER.forEach(function(id){ team[id] = Object.assign({}, DEFAULTS[id]); });
+function loadConfig(){
+  try{
+    const raw = localStorage.getItem(CONFIG_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+function saveConfig(cfg){ localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); }
 
-  var teamGrid = document.getElementById('teamGrid');
-  var meetingsList = document.getElementById('meetingsList');
-  var doneOwnerSel = document.getElementById('doneOwner');
-  var nextOwnerSel = document.getElementById('nextOwner');
-  var doneItems = [];
-  var nextItems = [];
-  var agendaItems = [];
-  var meetings = [];
-  var db = null;
+function b64EncodeUnicode(str){
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (m,p1) => String.fromCharCode('0x'+p1)));
+}
+function b64DecodeUnicode(str){
+  const clean = str.replace(/\n/g,'');
+  return decodeURIComponent(atob(clean).split('').map(c => '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+}
 
-  function ownerLabel(id){
-    var m = team[id];
-    if(!m) return id;
-    var nm = (m.name||"").trim();
-    return nm ? (nm + " · " + m.roleShort) : m.roleShort;
+function apiUrl(){ return `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${gh.path}`; }
+function ghHeaders(){ return { 'Authorization': `Bearer ${gh.token}`, 'Accept': 'application/vnd.github+json' }; }
+
+function setSyncPill(mode, text){
+  const pill = document.getElementById('syncPill');
+  const label = document.getElementById('syncPillText');
+  pill.className = 'sync-pill' + (mode ? ' '+mode : '');
+  label.textContent = text;
+}
+
+async function loadState(){
+  gh = loadConfig();
+  if(!gh){
+    document.getElementById('repoLabel').textContent = 'Not connected';
+    setSyncPill('off', 'Not connected to GitHub');
+    state = defaultState();
+    activeSectionId = state.sections[0].id;
+    render();
+    openSettings();
+    return;
   }
-
-  function initials(name, roleShort){
-    var s = (name||roleShort||"").trim();
-    return s.slice(0,1).toUpperCase() || "?";
-  }
-
-  function renderTeam(){
-    teamGrid.innerHTML = "";
-    TEAM_ORDER.forEach(function(id){
-      var m = team[id];
-      var card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML =
-        '<div class="member-top">' +
-          '<div class="avatar" style="background:'+m.color+'">'+initials(m.name,m.roleShort)+'</div>' +
-          '<div class="member-id">' +
-            '<div class="member-name-row"><input class="name-input" data-id="'+id+'" placeholder="Enter name…" value="'+(m.name||'')+'"></div>' +
-            '<span class="role-chip">'+m.roleShort+' · '+m.roleTitle+'</span>' +
-          '</div>' +
-        '</div>' +
-        '<div><p class="field-label">Job Description</p><textarea class="edit-box" data-id="'+id+'" data-field="desc" rows="3">'+escapeHtml(m.desc)+'</textarea></div>' +
-        '<div><p class="field-label">Capabilities <span class="hint-inline">(one per line)</span></p><textarea class="edit-box" data-id="'+id+'" data-field="caps" rows="4">'+m.caps.map(escapeHtml).join('\n')+'</textarea></div>' +
-        '<div><p class="field-label">Related Tasks <span class="hint-inline">(one per line)</span></p><textarea class="edit-box" data-id="'+id+'" data-field="tasks" rows="5">'+m.tasks.map(escapeHtml).join('\n')+'</textarea></div>' +
-        '<div><p class="field-label">Ideas & Notes</p><textarea class="edit-box" data-id="'+id+'" data-field="ideas" rows="3" placeholder="Ideas, discussion topics, or notes for this person…">'+escapeHtml(m.ideas||'')+'</textarea></div>' +
-        '<div class="save-hint" data-hint="'+id+'"></div>';
-      teamGrid.appendChild(card);
-    });
-
-    teamGrid.querySelectorAll('.name-input').forEach(function(inp){
-      inp.addEventListener('change', function(){
-        var id = inp.dataset.id;
-        team[id].name = inp.value;
-        writeTeam(id, {name: inp.value});
-        renderOwnerSelects();
-        renderMeetings();
-      });
-    });
-    teamGrid.querySelectorAll('.edit-box').forEach(function(ta){
-      ta.addEventListener('change', function(){
-        var id = ta.dataset.id;
-        var field = ta.dataset.field;
-        var patch = {};
-        if(field === 'caps' || field === 'tasks'){
-          var arr = ta.value.split('\n').map(function(s){return s.trim();}).filter(function(s){return s.length > 0;});
-          team[id][field] = arr;
-          patch[field] = arr;
-        } else {
-          team[id][field] = ta.value;
-          patch[field] = ta.value;
-        }
-        writeTeam(id, patch);
-        flashHint(id);
-      });
-    });
-  }
-
-  function flashHint(id){
-    var el = document.querySelector('.save-hint[data-hint="'+id+'"]');
-    if(!el) return;
-    el.textContent = "Saved";
-    el.style.opacity = 1;
-    setTimeout(function(){ el.style.opacity = 0; }, 1400);
-  }
-
-  function renderOwnerSelects(){
-    [doneOwnerSel, nextOwnerSel].forEach(function(sel){
-      var current = sel.value;
-      sel.innerHTML = TEAM_ORDER.map(function(id){
-        return '<option value="'+id+'">'+ownerLabel(id)+'</option>';
-      }).join('');
-      if(current) sel.value = current;
-    });
-  }
-
-  function writeTeam(id, patch){
-    if(!db) return;
-    db.doc('team/'+id).set(Object.assign({}, team[id], patch)).catch(function(){});
-  }
-
-  function subscribeTeam(){
-    if(!db) return;
-    TEAM_ORDER.forEach(function(id){
-      db.doc('team/'+id).onSnapshot(function(snap){
-        if(snap.exists){
-          team[id] = Object.assign({}, DEFAULTS[id], snap.data());
-        }
-        renderTeam();
-        renderOwnerSelects();
-        renderMeetings();
-      }, function(){ /* keep local defaults on error */ });
-    });
-  }
-
-  // ---- meeting form ----
-  var toggleFormBtn = document.getElementById('toggleFormBtn');
-  var meetingForm = document.getElementById('meetingForm');
-  var cancelBtn = document.getElementById('cancelMeetingBtn');
-  var meetingFormTitle = document.getElementById('meetingFormTitle');
-  var saveMeetingBtn = document.getElementById('saveMeetingBtn');
-  var editingMeetingId = null;
-
-  toggleFormBtn.addEventListener('click', function(){
-    if(!meetingForm.hidden){
-      resetForm();
-      return;
-    }
-    editingMeetingId = null;
-    meetingFormTitle.textContent = "New Meeting";
-    saveMeetingBtn.textContent = "Save Meeting";
-    doneItems = []; nextItems = []; agendaItems = [];
-    document.getElementById('meetingNotes').value = "";
-    renderChips();
-    meetingForm.hidden = false;
-    document.getElementById('meetingDate').valueAsDate = new Date();
-  });
-  cancelBtn.addEventListener('click', resetForm);
-
-  function resetForm(){
-    meetingForm.hidden = true;
-    editingMeetingId = null;
-    doneItems = []; nextItems = []; agendaItems = [];
-    document.getElementById('doneText').value = "";
-    document.getElementById('nextText').value = "";
-    document.getElementById('agendaText').value = "";
-    document.getElementById('meetingNotes').value = "";
-    saveMeetingBtn.textContent = "Save Meeting";
-    meetingFormTitle.textContent = "New Meeting";
-    renderChips();
-  }
-
-  function startEditMeeting(mt){
-    editingMeetingId = mt.id;
-    meetingFormTitle.textContent = "Edit Meeting — " + fmtDate(mt.date);
-    saveMeetingBtn.textContent = "Update Meeting";
-    agendaItems = (mt.agenda || []).map(function(a){ return {text:a.text, done:!!a.done}; });
-    var tasks = mt.tasks || [];
-    doneItems = tasks.filter(function(t){ return t.done; }).map(function(t){ return {text:t.text, owner:t.owner}; });
-    nextItems = tasks.filter(function(t){ return !t.done; }).map(function(t){ return {text:t.text, owner:t.owner, done:false}; });
-    document.getElementById('meetingNotes').value = mt.summary || "";
-    renderChips();
-    meetingForm.hidden = false;
-    document.getElementById('meetingDate').value = mt.date;
-    meetingForm.scrollIntoView({behavior:'smooth', block:'start'});
-  }
-
-  function deleteMeeting(mt){
-    if(!confirm('Delete the meeting from ' + fmtDate(mt.date) + '? This cannot be undone.')) return;
-    if(db && mt.id){
-      db.doc('meetings/'+mt.id).delete().catch(function(){ alert('Could not delete, please try again'); });
+  document.getElementById('repoLabel').textContent = `${gh.owner}/${gh.repo}`;
+  setSyncPill('saving', 'Loading from GitHub…');
+  try{
+    const res = await fetch(`${apiUrl()}?ref=${encodeURIComponent(gh.branch)}&t=${Date.now()}`, { headers: ghHeaders() });
+    if(res.status === 404){
+      state = defaultState();
+      fileSha = null;
+      await persist(true);
+    } else if(res.ok){
+      const data = await res.json();
+      fileSha = data.sha;
+      state = JSON.parse(b64DecodeUnicode(data.content));
     } else {
-      meetings = meetings.filter(function(m){ return m !== mt; });
-      renderMeetings();
+      const errBody = await res.text();
+      throw new Error(`${res.status}: ${errBody.slice(0,200)}`);
     }
+    setSyncPill('ok', `Connected — synced with ${gh.owner}/${gh.repo}`);
+  }catch(e){
+    console.error(e);
+    state = defaultState();
+    setSyncPill('error', 'Could not load from GitHub — check settings');
   }
+  activeSectionId = state.sections[0] ? state.sections[0].id : null;
+  render();
+}
 
-  function renderChips(){
-    document.getElementById('agendaChips').innerHTML = agendaItems.map(function(it,i){
-      return '<span class="task-chip">'+escapeHtml(it.text)+'<button data-list="agenda" data-i="'+i+'">✕</button></span>';
-    }).join('');
-    document.getElementById('doneChips').innerHTML = doneItems.map(function(it,i){
-      return '<span class="task-chip"><span class="who">'+ownerLabel(it.owner)+'</span>'+escapeHtml(it.text)+'<button data-list="done" data-i="'+i+'">✕</button></span>';
-    }).join('');
-    document.getElementById('nextChips').innerHTML = nextItems.map(function(it,i){
-      return '<span class="task-chip"><span class="who">'+ownerLabel(it.owner)+'</span>'+escapeHtml(it.text)+'<button data-list="next" data-i="'+i+'">✕</button></span>';
-    }).join('');
-    document.querySelectorAll('.task-chip button').forEach(function(b){
-      b.addEventListener('click', function(){
-        var i = parseInt(b.dataset.i,10);
-        if(b.dataset.list==='done') doneItems.splice(i,1);
-        else if(b.dataset.list==='next') nextItems.splice(i,1);
-        else agendaItems.splice(i,1);
-        renderChips();
-      });
-    });
-  }
-
-  function escapeHtml(s){
-    var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
-  }
-
-  document.getElementById('addAgendaBtn').addEventListener('click', function(){
-    var t = document.getElementById('agendaText');
-    if(!t.value.trim()) return;
-    agendaItems.push({text:t.value.trim(), done:false});
-    t.value = ""; renderChips();
-  });
-  document.getElementById('addDoneBtn').addEventListener('click', function(){
-    var t = document.getElementById('doneText');
-    if(!t.value.trim()) return;
-    doneItems.push({text:t.value.trim(), owner:doneOwnerSel.value});
-    t.value = ""; renderChips();
-  });
-  document.getElementById('addNextBtn').addEventListener('click', function(){
-    var t = document.getElementById('nextText');
-    if(!t.value.trim()) return;
-    nextItems.push({text:t.value.trim(), owner:nextOwnerSel.value, done:false});
-    t.value = ""; renderChips();
-  });
-
-  saveMeetingBtn.addEventListener('click', function(){
-    var dateVal = document.getElementById('meetingDate').value;
-    if(!dateVal){ alert('Please choose a meeting date'); return; }
-    var allTasks = doneItems.map(function(it){ return {text:it.text, owner:it.owner, done:true}; })
-      .concat(nextItems.map(function(it){ return {text:it.text, owner:it.owner, done:false}; }));
-    if(allTasks.length===0 && agendaItems.length===0){ alert('Add at least one agenda item or task'); return; }
-    var body = {
-      date: dateVal,
-      agenda: agendaItems.slice(),
-      tasks: allTasks,
-      summary: document.getElementById('meetingNotes').value.trim()
+async function persist(isInitialCreate){
+  if(!gh) return;
+  setSyncPill('saving', 'Saving to GitHub…');
+  try{
+    const body = {
+      message: isInitialCreate ? 'Initialize GrowthSync data' : 'Update GrowthSync leads',
+      content: b64EncodeUnicode(JSON.stringify(state, null, 2)),
+      branch: gh.branch,
     };
-
-    if(editingMeetingId){
-      var existing = meetings.find(function(m){ return m.id === editingMeetingId; });
-      if(db && editingMeetingId){
-        db.doc('meetings/'+editingMeetingId).update(body).catch(function(){ alert('Could not save changes, please try again'); });
-      } else if(existing){
-        Object.assign(existing, body);
-        renderMeetings();
+    if(fileSha) body.sha = fileSha;
+    const res = await fetch(apiUrl(), {
+      method: 'PUT',
+      headers: { ...ghHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if(res.status === 409){
+      const fresh = await fetch(`${apiUrl()}?ref=${encodeURIComponent(gh.branch)}&t=${Date.now()}`, { headers: ghHeaders() });
+      if(fresh.ok){
+        const freshData = await fresh.json();
+        fileSha = freshData.sha;
+        return persist(false);
       }
-    } else {
-      body.createdAt = Date.now();
-      if(db){
-        db.collection('meetings').add(body).catch(function(){ alert('Could not save, please try again'); });
-      } else {
-        body._localId = 'local-'+Date.now();
-        meetings.unshift(body);
-        renderMeetings();
-      }
+      throw new Error('Conflict resolving sha');
     }
-    resetForm();
+    if(!res.ok){
+      const errBody = await res.text();
+      throw new Error(`${res.status}: ${errBody.slice(0,200)}`);
+    }
+    const data = await res.json();
+    fileSha = data.content.sha;
+    setSyncPill('ok', `Connected — synced with ${gh.owner}/${gh.repo}`);
+  }catch(e){
+    console.error(e);
+    setSyncPill('error', 'Save failed — check token & settings');
+  }
+}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => persist(false), 700);
+}
+
+function openSettings(){
+  const cfg = loadConfig() || {};
+  document.getElementById('cfgOwner').value = cfg.owner || '';
+  document.getElementById('cfgRepo').value = cfg.repo || '';
+  document.getElementById('cfgBranch').value = cfg.branch || 'main';
+  document.getElementById('cfgPath').value = cfg.path || 'data/leads.json';
+  document.getElementById('cfgToken').value = cfg.token || '';
+  document.getElementById('cfgError').classList.remove('show');
+  document.getElementById('settingsOverlay').classList.add('show');
+}
+function closeSettings(){ document.getElementById('settingsOverlay').classList.remove('show'); }
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('cfgCancel').addEventListener('click', closeSettings);
+document.getElementById('cfgSave').addEventListener('click', async () => {
+  const owner = document.getElementById('cfgOwner').value.trim();
+  const repo = document.getElementById('cfgRepo').value.trim();
+  const branch = document.getElementById('cfgBranch').value.trim() || 'main';
+  const path = document.getElementById('cfgPath').value.trim() || 'data/leads.json';
+  const token = document.getElementById('cfgToken').value.trim();
+  const errEl = document.getElementById('cfgError');
+  if(!owner || !repo || !token){
+    errEl.textContent = 'Owner, repository, and token are required.';
+    errEl.classList.add('show');
+    return;
+  }
+  saveConfig({ owner, repo, branch, path, token });
+  closeSettings();
+  document.getElementById('repoLabel').textContent = `${owner}/${repo}`;
+  await loadState();
+});
+
+function getActiveSection(){ return state.sections.find(s => s.id === activeSectionId) || null; }
+
+function render(){ renderSidebar(); renderMain(); }
+
+function renderSidebar(){
+  const list = document.getElementById('sectionList');
+  list.innerHTML = '';
+  state.sections.forEach(sec => {
+    const item = document.createElement('div');
+    item.className = 'section-item' + (sec.id === activeSectionId ? ' active' : '');
+    item.innerHTML = `
+      <span class="section-name"></span>
+      <span class="section-count">${sec.leads.length}</span>
+      <span class="section-actions">
+        <button class="icon-btn" data-action="rename" title="Rename">✎</button>
+        <button class="icon-btn" data-action="delete" title="Delete section">✕</button>
+      </span>
+    `;
+    item.querySelector('.section-name').textContent = sec.name;
+    item.addEventListener('click', (e) => {
+      if(e.target.closest('[data-action]')) return;
+      activeSectionId = sec.id;
+      render();
+    });
+    item.querySelector('[data-action="rename"]').addEventListener('click', (e) => { e.stopPropagation(); renameSection(sec); });
+    item.querySelector('[data-action="delete"]').addEventListener('click', (e) => { e.stopPropagation(); deleteSection(sec); });
+    list.appendChild(item);
+  });
+}
+
+function renameSection(sec){
+  const name = prompt('New section name:', sec.name);
+  if(name && name.trim()){ sec.name = name.trim(); scheduleSave(); render(); }
+}
+function deleteSection(sec){
+  if(!confirm(`Delete section "${sec.name}" and all its leads?`)) return;
+  state.sections = state.sections.filter(s => s.id !== sec.id);
+  if(activeSectionId === sec.id) activeSectionId = state.sections[0] ? state.sections[0].id : null;
+  scheduleSave();
+  render();
+}
+document.getElementById('addSectionBtn').addEventListener('click', () => {
+  const name = prompt('New section name (e.g. E-commerce):');
+  if(name && name.trim()){
+    const sec = { id: uid(), name: name.trim(), customFields: [], leads: [] };
+    state.sections.push(sec);
+    activeSectionId = sec.id;
+    scheduleSave();
+    render();
+  }
+});
+
+function renderMain(){
+  const sec = getActiveSection();
+  const title = document.getElementById('sectionTitle');
+  const meta = document.getElementById('sectionMeta');
+  const container = document.getElementById('leadsContainer');
+  container.innerHTML = '';
+
+  if(!sec){
+    title.textContent = 'No section yet';
+    meta.textContent = 'Add a new section from the sidebar to get started';
+    return;
+  }
+
+  title.textContent = sec.name;
+  const interestedCount = sec.leads.filter(l => l.interested === 'yes').length;
+  meta.textContent = `${sec.leads.length} leads · ${interestedCount} interested`;
+
+  const filtered = sec.leads.filter(l => {
+    if(!searchTerm) return true;
+    const t = searchTerm.toLowerCase();
+    return l.company.toLowerCase().includes(t) || l.contact.toLowerCase().includes(t);
   });
 
-  function fmtDate(iso){
-    try{
-      var d = new Date(iso+'T00:00:00');
-      return d.toLocaleDateString('en-US',{day:'2-digit',month:'short',year:'numeric'});
-    }catch(e){ return iso; }
+  if(filtered.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = sec.leads.length === 0
+      ? 'No leads in this section yet. Click "+ New lead" to start.'
+      : 'No leads match your search.';
+    container.appendChild(empty);
+    return;
   }
+  filtered.forEach((lead, idx) => container.appendChild(renderLeadCard(sec, lead, idx)));
+}
 
-  function renderMeetings(){
-    if(meetings.length===0){
-      meetingsList.innerHTML = '<div class="empty-state"><strong>No meetings logged yet</strong><span>Click "New Meeting" to log the first meeting and its tasks</span></div>';
-      return;
+function renderLeadCard(sec, lead, idx){
+  const card = document.createElement('div');
+  card.className = 'lead-card' + (lead.open ? ' open' : '');
+  const head = document.createElement('div');
+  head.className = 'lead-head';
+
+  const interestedBadge = lead.interested === 'yes'
+    ? '<span class="badge interested-yes">Interested</span>'
+    : lead.interested === 'no'
+      ? '<span class="badge interested-no">Not interested</span>'
+      : '<span class="badge interested-unset">Not set</span>';
+  const typeBadge = lead.type === 'actual'
+    ? '<span class="badge type-actual">Actual customer</span>'
+    : '<span class="badge type-potential">Potential lead</span>';
+  const initial = (lead.company || '?').trim().charAt(0).toUpperCase() || '?';
+  const color = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+
+  head.innerHTML = `
+    <div class="avatar" style="background:${color}">${initial}</div>
+    <div class="lead-summary">
+      <div class="lead-company">${escapeHtml(lead.company) || 'Unnamed company'}</div>
+      <div class="badges-row">
+        <span class="stage-pill">${escapeHtml(lead.stage) || '—'}</span>
+        ${interestedBadge}
+        ${typeBadge}
+      </div>
+    </div>
+    <span class="chevron">▶</span>
+    <span class="lead-head-actions">
+      <button class="icon-btn" data-action="delete-lead" title="Delete lead">✕</button>
+    </span>
+  `;
+  head.addEventListener('click', (e) => {
+    if(e.target.closest('[data-action]')) return;
+    lead.open = !lead.open;
+    render();
+  });
+  head.querySelector('[data-action="delete-lead"]').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if(confirm('Delete this lead?')){
+      sec.leads = sec.leads.filter(l => l.id !== lead.id);
+      scheduleSave();
+      render();
     }
-    meetingsList.innerHTML = "";
-    meetings.forEach(function(mt){
-      var mkey = mt.id || mt._localId;
-      var card = document.createElement('div');
-      card.className = 'meeting-card';
-      var tasks = mt.tasks || [];
-      var agenda = mt.agenda || [];
+  });
+  card.appendChild(head);
 
-      var agendaHtml = "";
-      if(agenda.length > 0){
-        var agendaRows = agenda.map(function(a, idx){
-          return '<div class="item-row'+(a.done?' is-done':'')+'">' +
-            '<input type="checkbox" '+(a.done?'checked':'')+' data-mid="'+mkey+'" data-kind="agenda" data-idx="'+idx+'">' +
-            '<span class="txt">'+escapeHtml(a.text)+'</span></div>';
-        }).join('');
-        agendaHtml = '<div class="agenda-block">' +
-          '<div class="member-block-title">☑ Agenda</div>' +
-          agendaRows +
-        '</div>';
-      }
+  if(lead.open){
+    const body = document.createElement('div');
+    body.className = 'lead-body';
+    body.innerHTML = `
+      <div class="two-col">
+        <div class="field"><label>Company name</label><input type="text" data-field="company" value="${escapeAttr(lead.company)}" placeholder="Company name"></div>
+        <div class="field"><label>Contact person</label><input type="text" data-field="contact" value="${escapeAttr(lead.contact)}" placeholder="Contact name"></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Company email</label><input type="email" data-field="email" value="${escapeAttr(lead.email)}" placeholder="name@company.com"></div>
+        <div class="field"><label>Company website</label><input type="url" data-field="website" value="${escapeAttr(lead.website)}" placeholder="https://company.com"></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Funnel stage</label>
+          <select data-field="stage">${STAGE_OPTIONS.map(s => `<option value="${escapeAttr(s)}" ${s===lead.stage?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Interested?</label>
+          <select data-field="interested">
+            <option value="" ${lead.interested===''?'selected':''}>Not set</option>
+            <option value="yes" ${lead.interested==='yes'?'selected':''}>Interested</option>
+            <option value="no" ${lead.interested==='no'?'selected':''}>Not interested</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Lead type</label>
+        <select data-field="type">
+          <option value="potential" ${lead.type==='potential'?'selected':''}>Potential lead</option>
+          <option value="actual" ${lead.type==='actual'?'selected':''}>Actual customer</option>
+        </select>
+      </div>
+      <div class="field"><label>Notes</label><textarea data-field="notes" placeholder="Notes about this client…">${escapeHtml(lead.notes)}</textarea></div>
+      <div class="section-label">Monthly follow-up email</div>
+      <div class="months-grid" id="months-${lead.id}"></div>
+      ${sec.customFields.length ? `<div class="section-label">Additional fields</div><div class="custom-fields" id="custom-${lead.id}"></div>` : ''}
+      <div class="lead-footer">
+        <button class="add-field-link" data-action="add-field">+ Add a field to every lead in this section</button>
+        <span></span>
+      </div>
+    `;
 
-      var blocksHtml = TEAM_ORDER.map(function(ownerId){
-        var mine = tasks.map(function(t,i){ return {t:t, idx:i}; }).filter(function(x){ return x.t.owner===ownerId; });
-        if(mine.length===0) return '';
-        var m = team[ownerId] || {};
-        var rows = mine.map(function(x){
-          return '<div class="item-row'+(x.t.done?' is-done':'')+'">' +
-            '<input type="checkbox" '+(x.t.done?'checked':'')+' data-mid="'+mkey+'" data-kind="task" data-idx="'+x.idx+'">' +
-            '<span class="txt">'+escapeHtml(x.t.text)+'</span></div>';
-        }).join('');
-        return '<div class="member-block">' +
-          '<div class="member-block-title"><span class="swatch" style="background:'+(m.color||'#999')+'"></span>'+escapeHtml(ownerLabel(ownerId))+'</div>' +
-          rows +
-        '</div>';
-      }).join('');
-
-      card.innerHTML =
-        '<div class="meeting-head">' +
-          '<div class="meeting-head-left"><span class="meeting-date">'+fmtDate(mt.date)+'</span></div>' +
-          '<div class="meeting-head-actions">' +
-            '<button class="icon-btn" data-act="edit" data-mid="'+mkey+'" type="button">✎ Edit</button>' +
-            '<button class="icon-btn danger" data-act="delete" data-mid="'+mkey+'" type="button">🗑 Delete</button>' +
-          '</div>' +
-        '</div>' +
-        agendaHtml +
-        (blocksHtml || '<div class="item-row"><span class="txt" style="color:var(--text-muted)">No tasks logged for this meeting</span></div>') +
-        (mt.summary ? '<div class="meeting-notes"><span class="lbl">Summary</span>'+escapeHtml(mt.summary)+'</div>' : '');
-      meetingsList.appendChild(card);
-    });
-
-    meetingsList.querySelectorAll('.icon-btn').forEach(function(b){
-      b.addEventListener('click', function(){
-        var mid = b.dataset.mid;
-        var mt = meetings.find(function(m){ return (m.id || m._localId) === mid; });
-        if(!mt) return;
-        if(b.dataset.act === 'edit') startEditMeeting(mt);
-        else deleteMeeting(mt);
+    body.querySelectorAll('[data-field]').forEach(el => {
+      el.addEventListener('change', () => {
+        lead[el.dataset.field] = el.value;
+        scheduleSave();
+        if(['company','stage','interested','type'].includes(el.dataset.field)) render();
       });
     });
 
-    meetingsList.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
-      cb.addEventListener('change', function(){
-        var mid = cb.dataset.mid, idx = parseInt(cb.dataset.idx,10), kind = cb.dataset.kind;
-        var mt = meetings.find(function(m){ return (m.id || m._localId)===mid; });
-        if(!mt) return;
-        var field = kind === 'agenda' ? 'agenda' : 'tasks';
-        mt[field][idx].done = cb.checked;
-        if(db && mt.id){
-          var patch = {};
-          patch[field] = mt[field];
-          db.doc('meetings/'+mt.id).update(patch).catch(function(){});
-        } else {
-          renderMeetings();
-        }
+    const monthsWrap = body.querySelector(`#months-${lead.id}`);
+    MONTHS.forEach((m, i) => {
+      const box = document.createElement('div');
+      box.className = 'month-box' + (lead.monthly[i] ? ' checked' : '');
+      box.innerHTML = `<span class="box">${lead.monthly[i] ? '✓' : ''}</span><span>${m}</span>`;
+      box.addEventListener('click', () => {
+        lead.monthly[i] = !lead.monthly[i];
+        scheduleSave();
+        render();
       });
+      monthsWrap.appendChild(box);
     });
-  }
 
-  function subscribeMeetings(){
-    if(!db) return;
-    db.collection('meetings').orderBy('date','desc').onSnapshot(function(snap){
-      meetings = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
-      renderMeetings();
-    }, function(){ /* leave list as-is */ });
-  }
-
-  function setStatus(ok, text){
-    var el = document.getElementById('dbStatus');
-    el.classList.toggle('offline', !ok);
-    document.getElementById('dbStatusText').textContent = text;
-  }
-
-  function loadScript(src, timeoutMs){
-    return new Promise(function(resolve, reject){
-      var done = false;
-      var el = document.createElement('script');
-      el.src = src;
-      var timer = setTimeout(function(){
-        if(done) return;
-        done = true;
-        reject(new Error('timed out loading ' + src));
-      }, timeoutMs || 10000);
-      el.onload = function(){
-        if(done) return;
-        done = true;
-        clearTimeout(timer);
-        resolve();
-      };
-      el.onerror = function(){
-        if(done) return;
-        done = true;
-        clearTimeout(timer);
-        reject(new Error('failed to load ' + src));
-      };
-      document.head.appendChild(el);
-    });
-  }
-
-  function boot(){
-    // The page itself (team cards, meeting form, everything) is fully rendered
-    // right here, synchronously — nothing below this point can block it from showing.
-    renderTeam();
-    renderOwnerSelects();
-    renderMeetings();
-
-    if(!firebaseConfig.apiKey || firebaseConfig.apiKey === "PASTE_ME"){
-      setStatus(false, "Not connected yet — paste your Firebase config near the top of this file");
-      return;
+    if(sec.customFields.length){
+      const cfWrap = body.querySelector(`#custom-${lead.id}`);
+      sec.customFields.forEach(cf => {
+        const row = document.createElement('div');
+        row.className = 'custom-field-row';
+        row.innerHTML = `
+          <div class="field"><label>${escapeHtml(cf.label)}</label>
+            <input type="text" value="${escapeAttr(lead.custom[cf.id] || '')}" placeholder="${escapeAttr(cf.label)}"></div>
+          <button class="icon-btn" title="Remove this field from all leads">✕</button>
+        `;
+        const input = row.querySelector('input');
+        input.addEventListener('change', () => { lead.custom[cf.id] = input.value; scheduleSave(); });
+        row.querySelector('button').addEventListener('click', () => {
+          if(confirm(`Remove field "${cf.label}" from every lead in this section?`)){
+            sec.customFields = sec.customFields.filter(f => f.id !== cf.id);
+            sec.leads.forEach(l => delete l.custom[cf.id]);
+            scheduleSave();
+            render();
+          }
+        });
+        cfWrap.appendChild(row);
+      });
     }
-
-    setStatus(false, "Connecting to database…");
-    loadScript("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js", 10000)
-      .then(function(){
-        return loadScript("https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js", 10000);
-      })
-      .then(function(){
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-        setStatus(true, "Connected — changes are saved and shared with the team");
-        subscribeTeam();
-        subscribeMeetings();
-      })
-      .catch(function(e){
-        db = null;
-        setStatus(false, "Could not connect — check your internet connection (some networks block Google services)");
-      });
+    body.querySelector('[data-action="add-field"]').addEventListener('click', () => addCustomField(sec));
+    card.appendChild(body);
   }
+  return card;
+}
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
-  }
-})();
+function addCustomField(sec){
+  const label = prompt('New field name (will be added to every lead in this section):');
+  if(label && label.trim()){ sec.customFields.push({ id: uid(), label: label.trim() }); scheduleSave(); render(); }
+}
+
+document.getElementById('addLeadBtn').addEventListener('click', () => {
+  const sec = getActiveSection();
+  if(!sec) return;
+  sec.leads.unshift(newLead());
+  scheduleSave();
+  render();
+});
+document.getElementById('addFieldSectionBtn').addEventListener('click', () => {
+  const sec = getActiveSection();
+  if(!sec) return;
+  addCustomField(sec);
+});
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchTerm = e.target.value.trim();
+  renderMain();
+});
+document.getElementById('syncPill').addEventListener('click', () => { if(!gh) openSettings(); });
+
+function escapeHtml(str){
+  return (str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+loadState();
 </script>
 </body>
 </html>
