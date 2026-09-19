@@ -37,7 +37,8 @@
             false
           ],
           "custom": {},
-          "open": true
+          "open": true,
+          "growthLeak": "1) Very early-stage app (first released Aug 2025) with limited public brand presence — building parent trust against established school-search sites/word-of-mouth will be slow and CAC-heavy. 2) Monetization via \"exclusive discounts\" on tuition suggests thin take-rate margins unless volume scales fast. 3) No confirmed funding or founder visibility in public sources — could signal a bootstrapped/early team with limited runway for paid growth. 4) Dependent on schools/nurseries opting in and keeping listings updated — a two-sided marketplace cold-start problem."
         },
         {
           "id": "a7dc41f1",
@@ -65,7 +66,8 @@
             false
           ],
           "custom": {},
-          "open": true
+          "open": true,
+          "growthLeak": "1) Working-capital exposure: advancing cash against merchants' COD sales ties up balance-sheet capital and creates credit risk if merchants default or sales dip — a common failure point for embedded-finance logistics startups. 2) Crowded competitive field in Egypt/MENA courier-aggregation (Bosta, Mylerz, Trella-style players) could compress margins and slow merchant acquisition. 3) Post-Seed scaling into new African/Middle-East markets risks stretching a still-small team thin before the Egypt base is fully monetized. 4) Revenue concentration in a handful of verticals (fashion, cosmetics, electronics) leaves growth exposed to demand swings in those categories."
         }
       ]
     },
@@ -100,7 +102,8 @@
             false
           ],
           "custom": {},
-          "open": true
+          "open": true,
+          "growthLeak": "1) EGP devaluation and construction-cost inflation are squeezing margins across Egyptian real estate broadly, which can delay phases or push sub-developers to renegotiate land deals. 2) Oversupply risk: dozens of sub-developers (Palm Hills, SODIC, Hassan Allam, Emaar Misr, etc.) are building simultaneously inside the same 45M-sqm master plan, raising the risk of unsold inventory and price competition. 3) State-bank ownership (Banque Misr, NBE, National Investment Bank) can slow decision-making and land-release speed versus privately-owned rivals. 4) Long infrastructure build-out timelines mean the city's full value (schools, hospitals, retail) lags residential handover, which can soften buyer confidence in interim years."
         }
       ]
     },
@@ -135,7 +138,8 @@
             false
           ],
           "custom": {},
-          "open": true
+          "open": true,
+          "growthLeak": "1) Post-merger integration risk: KFH Egypt is still absorbing Ahli United Bank Egypt's systems, branding and culture (rebranded Feb 2025), which can slow product launches and customer-facing decisions in the near term. 2) Sharia-compliance requirements constrain product flexibility versus conventional and fintech competitors moving faster on digital lending/payments. 3) As a large legacy bank, digital-transformation pace is typically slower than local fintech challengers targeting the same underbanked/Islamic-finance segment. 4) Being part of a foreign (Kuwaiti) banking group means Egypt-specific strategy may compete for capital/attention against KFH's other 12-country footprint."
         }
       ]
     },
@@ -170,7 +174,8 @@
             false
           ],
           "custom": {},
-          "open": true
+          "open": true,
+          "growthLeak": "1) Young private university (established 2019) competing for enrollment against well-established brands (AUC, GUC, German University, BUE) with decades of reputation and alumni networks. 2) Limited public digital footprint/marketing presence found in research — could indicate weak top-of-funnel awareness among prospective students and parents. 3) Narrow initial faculty offering (engineering, business, physiotherapy, nursing, construction tech) versus broader multi-faculty rivals may cap addressable student pool. 4) Single campus in Fifth Settlement ties growth to that catchment area's population and competing nearby campuses (Mostakbal City, New Cairo universities cluster)."
         }
       ]
     }
