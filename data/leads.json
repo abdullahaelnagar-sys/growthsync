@@ -4,13 +4,115 @@
       "id": "13ec1488",
       "name": "SaaS",
       "customFields": [],
-      "leads": []
+      "leads": [
+        {
+          "id": "af539282",
+          "company": "Revora (formerly MyAlice)",
+          "contact": "Shuvo Rahman & Daniyal Baig (Co-founders)",
+          "email": "",
+          "website": "",
+          "referrer": "Research (funding/hiring signals — LinkedIn blocked, sourced via web search + Wamda/Sharikat Mubasher/Seedtable)",
+          "growthLeak": [
+            "Just rebranded from MyAlice to Revora — a rebrand needs a coordinated positioning/content rollout so existing and new merchants understand the new value proposition (Growth Hub: brand positioning).",
+            "10x revenue growth after refocusing on Saudi/GCC suggests demand is outpacing internal marketing capacity — a dedicated growth team could scale merchant acquisition faster than the current pace allows.",
+            "The 'structured catalogue data for AI shopping agents' angle is a genuinely new idea merchants may not immediately grasp — needs an education-led content strategy (Growth Authority) to make the pitch land.",
+            "Active in 21+ countries with GCC prioritized — each new push likely needs its own localized go-to-market (language, channel mix, creative), which is exactly a Growth Hub-style rollout per market."
+          ],
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "AI-native e-commerce operating platform for online merchants (AI agents for sales, cart recovery, and in-chat payments across WhatsApp/Instagram/web). HQ Saudi Arabia / Dubai, founded 2021, rebranded from MyAlice in 2026. Closed a $2M seed round (announced 24 Jun 2026, co-led by i2i Ventures and Oraseya Capital) specifically to fuel Saudi/GCC expansion — their fastest-growing market, with reported 10x revenue growth since refocusing there in late 2024. Operates in 21+ countries, serves 500+ merchants including Jarir Bookstore and BMW Motorrad.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        }
+      ]
     },
     {
       "id": "b226af18",
       "name": "Tech",
       "customFields": [],
       "leads": [
+        {
+          "id": "0ffc6bef",
+          "company": "Darwinz AI (TheDar.AI) — 'Dima' platform",
+          "contact": "Mohy Aboualam & Emad Elazhary (Co-founders)",
+          "email": "",
+          "website": "",
+          "referrer": "Research (funding/hiring signals — LinkedIn blocked, sourced via web search + Wamda/Sharikat Mubasher/Seedtable)",
+          "growthLeak": [
+            "Ironic but real opening: a marketing/PR AI tool company with limited visible marketing content of its own — a Growth Authority push where GrowthSync helps them 'live their own message' is a strong, credible pitch.",
+            "Planning international expansion beyond MENA within roughly 18 months — each new market needs its own localized go-to-market, a natural Venture Hub + Growth Hub combination.",
+            "Very small first raise ($325K) implies a lean marketing budget — a low-commitment pilot (e.g. one paid-acquisition test or a content sprint) ahead of their planned 2H 2026 raise could double as a growth-metrics boost for their own fundraising story."
+          ],
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Saudi-Egyptian AI startup (founded Egypt 2021, now HQ'd at The Garage, KACST, Riyadh). Its product 'Dima' is an AI copilot for marketing/PR teams — real-time brand sentiment tracking, crisis alerts and media analysis across 6 MENA countries, 300+ professional users, 90%+ client retention. Closed its first-ever institutional round in June 2025: $325K seed led by Flat6Labs KSA and Glint Ventures, aimed at product development and a global rollout; co-founder mentioned plans for a follow-on raise in 2H 2026 ahead of expansion beyond MENA. Note: they build tools *for* marketers, so any pitch should be framed as a peer collaboration ('we help you practice what Dima preaches') rather than a generic outreach.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
+          "id": "79926cf7",
+          "company": "Gaia AI",
+          "contact": "Badr Al-Malluh (CEO & Co-founder)",
+          "email": "",
+          "website": "",
+          "referrer": "Research (funding/hiring signals — LinkedIn blocked, sourced via web search + Wamda/Sharikat Mubasher/Seedtable)",
+          "growthLeak": [
+            "Extremely early stage — first funding just closed this week, no established growth funnel yet; this is Venture Hub-style go-to-market territory more than a typical marketing engagement.",
+            "Selling into enterprise/security-sensitive buyers as a brand-new, unknown name — needs account-based content and positioning to build C-suite trust before any paid channel will convert.",
+            "No visible public thought-leadership presence for a data-residency/sovereign-AI story that depends entirely on trust — a Growth Authority content pillar is close to a prerequisite here.",
+            "Team is being built from scratch post-funding — a 'one growth team in sync' pitch (marketing + tech + AI working together) lands well while their internal functions are still forming."
+          ],
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Riyadh-based sovereign enterprise AI startup (Saudi Arabia). Founded 2026 by CEO Badr Al-Malluh (previously co-founded influencer marketing platform KLIQ) and CPTO Mohammad Rababah (ex-DESAISIV). Builds a private/on-prem AI intelligence layer connecting files, email, CRM and ERP for Saudi enterprises (data-residency focused). Just closed its first-ever institutional round: $1.5M pre-seed led by SEEDRA Ventures (announced 8 Sept 2026 — this week). Also joined Nvidia's Inception program.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
         {
           "id": "96126702",
           "company": "Edu Market (edumarket.io)",
@@ -88,6 +190,106 @@
       "name": "Real Estate",
       "customFields": [],
       "leads": [
+        {
+          "id": "adbcf6b9",
+          "company": "Ajar (Ajar Online)",
+          "contact": "Shaheen Alkhudhari (Founder & CEO) — note: one 2022 Bahrain-launch article names a different CEO, Mohammed Al-Munaikh; verify current leadership before outreach",
+          "email": "",
+          "website": "",
+          "referrer": "Research (funding/hiring signals — LinkedIn blocked, sourced via web search + Wamda/Sharikat Mubasher/Seedtable)",
+          "growthLeak": [
+            "Long-running multi-country expansion (Saudi, Egypt, Bahrain, plus Spain/Bosnia listed) — each market is effectively its own launch needing localized content and acquisition strategy (Growth Hub).",
+            "Transaction-fee model means growth is directly tied to landlord/unit acquisition volume — a growth-hacking funnel focused specifically on landlord sign-up (not just tenant-side awareness) could move revenue directly.",
+            "Public content/visibility looks thin relative to being one of the region's most-funded proptech companies — a Growth Authority content push could support both new-market credibility and their next funding conversation."
+          ],
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Kuwait-born (2016) cloud-based property management and rent-collection platform, now HQ'd in Dubai. Raised $7.5M total (BECO Capital, Sharq Ventures, SBX Capital, 500 Startups, Seed Partner) and has been expanding across Kuwait, UAE, Saudi Arabia, Egypt and Bahrain, plus a listed presence in Spain and Bosnia. Revenue model is transaction fees on rent payments (reported 82,000 transactions / $110M GMV in a past year per Forbes ME). Could not confirm an official website domain from public search snippets — verify directly before outreach.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
+          "id": "424b1a0d",
+          "company": "Sakan",
+          "contact": "Abdullah Al-Saleh (CEO & Founder)",
+          "email": "",
+          "website": "",
+          "referrer": "Research (funding/hiring signals — LinkedIn blocked, sourced via web search + Wamda/Sharikat Mubasher/Seedtable)",
+          "growthLeak": [
+            "Fresh acquisition (Hapondo, Qatar) means merging two brands/audiences — a customer-journey and positioning project to unify the products cleanly is a clear Growth Hub opportunity.",
+            "Already has an in-house marketing lead — the right pitch here is a specific, complementary engagement (e.g. a paid-ads test, a content sprint, or a Tech Hub conversion audit) rather than replacing their team.",
+            "Operating across 5 different GCC markets (Kuwait, Saudi, Oman, Bahrain, Qatar) simultaneously — localized growth-hacking experiments per market could reveal which channels/messaging actually work where, something one internal hire can't easily run alone."
+          ],
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Kuwait-founded (2016) full-stack real estate marketplace/proptech operating across Kuwait, Saudi Arabia, Oman and Bahrain. In Aug 2024 acquired Qatari proptech Hapondo (founded by Ahmad AlKhanji) to expand into Qatar, combining Sakan's tech/network with Hapondo's local market data and developer relationships. Already has an internal Marketing Director (Amir Elshazly, ex-Head of Growth & Performance Marketing at The Sultan Center) — outreach should be framed as complementary support, not a full outsourced takeover.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
+          "id": "0d4e830f",
+          "company": "estaie",
+          "contact": "Osama Shawky (Founder & CEO)",
+          "email": "",
+          "website": "",
+          "referrer": "Research (funding/hiring signals — LinkedIn blocked, sourced via web search + Wamda/Sharikat Mubasher/Seedtable)",
+          "growthLeak": [
+            "Actively expanding from Dubai into Riyadh right now — a brand-new market launch needs localized positioning, content, and paid acquisition from day one (Growth Hub).",
+            "Still building category awareness for 'extended stay' as distinct from hotels or annual leasing — a Growth Authority content push to educate the market (and differentiate from both hotel booking sites and rental platforms) is a natural entry point.",
+            "Early-traction, pre-seed team is likely lean and stretched across product + ops + fundraising — the 'one growth team instead of juggling multiple agencies' pitch fits their stage well.",
+            "As an AI-native platform, a Tech Hub audit of the booking/discovery funnel could lift conversion as they push new traffic into the Riyadh launch."
+          ],
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "UAE-based AI-native extended-stay hospitality/proptech platform (bookings 30–365 nights), founded 2025 by CEO Osama Shawky (6x founder, 3 exits), CTO Nimit Solanki (ex-Careem/Grab) and COO Mark Reed (ex-Finnair/Disney). Raised a seven-figure pre-seed round in April 2026 (led by PlusVC and Orbit Ventures, with Falak Angels and VMS) specifically to expand from Dubai into Riyadh. Early traction: 3,000+ nights booked, 17-18% monthly growth. Supported by Dubai's in5 incubator.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
         {
           "id": "efed7f16",
           "company": "El Mostakbal for Urban Development (Mostakbal City)",
