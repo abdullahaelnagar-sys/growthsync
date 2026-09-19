@@ -165,6 +165,27 @@
   .growthleak-row textarea:focus{outline:none;border-color:var(--accent);}
   .growthleak-row .icon-btn{margin-top:6px;}
 
+  .social-row{display:flex;gap:10px;align-items:center;}
+  .social-chip{
+    display:flex;align-items:center;gap:6px;
+    border:1px solid var(--border);border-radius:999px;padding:6px 10px 6px 6px;
+    background:var(--bg-input);
+  }
+  .social-chip.set{border-color:var(--border);}
+  .social-icon-btn{
+    width:28px;height:28px;border-radius:50%;flex:none;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;
+  }
+  .social-icon-btn.instagram{background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);}
+  .social-icon-btn.linkedin{background:#0a66c2;}
+  .social-icon-btn svg{width:15px;height:15px;fill:#fff;}
+  .social-chip .social-label{font-size:11.5px;color:var(--sub);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .social-chip .social-label.empty{color:var(--sub-dim);font-style:italic;}
+  .social-edit-btn{
+    background:none;border:none;color:var(--sub-dim);cursor:pointer;padding:2px;font-size:11px;flex:none;
+  }
+  .social-edit-btn:hover{color:var(--ink);}
+
   .lead-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);}
   .add-field-link{background:none;border:none;color:var(--sub);font-size:12px;cursor:pointer;font-family:inherit;padding:0;}
   .add-field-link:hover{color:var(--accent-soft-text);}
@@ -266,6 +287,10 @@ const CONFIG_KEY = 'growthsync-gh-config';
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const STAGE_OPTIONS = ['New lead','First contact','Qualified','Proposal sent','Negotiation','Closed won','On hold'];
 const AVATAR_COLORS = ['#7fd9a3','#6f9fd8','#d8a35f','#a980d8','#d87f9a','#5fcfc4'];
+const ICONS = {
+  instagram: '<svg viewBox="0 0 24 24"><path d="M12 2c2.7 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.22.6 1.77 1.15.55.55.89 1.11 1.15 1.77.25.64.42 1.37.47 2.43.05 1.06.06 1.42.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43-.26.66-.6 1.22-1.15 1.77-.55.55-1.11.89-1.77 1.15-.64.25-1.37.42-2.43.47-1.06.05-1.42.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47-.66-.26-1.22-.6-1.77-1.15-.55-.55-.89-1.11-1.15-1.77-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.7 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.26-.66.6-1.22 1.15-1.77.55-.55 1.11-.89 1.77-1.15.64-.25 1.37-.42 2.43-.47C8.94 2.01 9.3 2 12 2zm0 5a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm5.25-3.5a1.17 1.17 0 100 2.33 1.17 1.17 0 000-2.33z"/></svg>',
+  linkedin: '<svg viewBox="0 0 24 24"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1-.02-5zM3 9h4v12H3zM9 9h3.8v1.64h.06c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.77 2.65 4.77 6.1V21h-4v-5.5c0-1.31-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg>',
+};
 
 let state = null;
 let fileSha = null;
@@ -290,6 +315,7 @@ function defaultState(){
 function newLead(){
   return {
     id: uid(), company: '', contact: '', email: '', website: '', referrer: '', growthLeak: [],
+    social: { instagram: '', linkedin: '' },
     stage: STAGE_OPTIONS[0], interested: '', type: 'potential', notes: '',
     monthly: Array(12).fill(false), custom: {}, open: true,
   };
@@ -609,6 +635,8 @@ function renderLeadCard(sec, lead, idx){
         </select>
       </div>
       <div class="field"><label>Lead provider</label><input type="text" data-field="referrer" value="${escapeAttr(lead.referrer)}" placeholder="Who brought in this lead?"></div>
+      <div class="section-label">Social Media</div>
+      <div class="social-row" id="social-${lead.id}"></div>
       <div class="field"><label>Notes</label><textarea data-field="notes" placeholder="Notes about this client…">${escapeHtml(lead.notes)}</textarea></div>
       <div class="section-label">Growth Leak — what GrowthSync could fix here</div>
       <div class="growthleak-list" id="growthleak-${lead.id}"></div>
@@ -667,6 +695,41 @@ function renderLeadCard(sec, lead, idx){
       });
     }
     body.querySelector('[data-action="add-field"]').addEventListener('click', () => addCustomField(sec));
+
+    const socialWrap = body.querySelector(`#social-${lead.id}`);
+    function renderSocial(){
+      if(!lead.social) lead.social = { instagram: '', linkedin: '' };
+      socialWrap.innerHTML = '';
+      const kinds = [
+        { key: 'instagram', label: 'Instagram', cls: 'instagram', icon: ICONS.instagram },
+        { key: 'linkedin', label: 'LinkedIn', cls: 'linkedin', icon: ICONS.linkedin },
+      ];
+      kinds.forEach(k => {
+        const url = lead.social[k.key] || '';
+        const chip = document.createElement('div');
+        chip.className = 'social-chip' + (url ? ' set' : '');
+        chip.innerHTML = `
+          <button class="social-icon-btn ${k.cls}" title="${url ? 'Open ' + k.label : 'Add ' + k.label + ' link'}">${k.icon}</button>
+          <span class="social-label ${url ? '' : 'empty'}">${url ? escapeHtml(url.replace(/^https?:\/\/(www\.)?/,'')) : 'Not set'}</span>
+          <button class="social-edit-btn" title="Edit link">✎</button>
+        `;
+        chip.querySelector('.social-icon-btn').addEventListener('click', () => {
+          if(url){ window.open(url, '_blank', 'noopener'); }
+          else { editSocialLink(k.key, k.label); }
+        });
+        chip.querySelector('.social-edit-btn').addEventListener('click', () => editSocialLink(k.key, k.label));
+        socialWrap.appendChild(chip);
+      });
+    }
+    function editSocialLink(key, label){
+      const current = lead.social[key] || '';
+      const val = prompt(`${label} link for ${lead.company || 'this lead'}:`, current);
+      if(val === null) return;
+      lead.social[key] = val.trim();
+      scheduleSave();
+      renderSocial();
+    }
+    renderSocial();
 
     const glWrap = body.querySelector(`#growthleak-${lead.id}`);
     function renderGrowthLeak(){
