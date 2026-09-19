@@ -10,7 +10,36 @@
       "id": "b226af18",
       "name": "Tech",
       "customFields": [],
-      "leads": []
+      "leads": [
+        {
+          "id": "a7dc41f1",
+          "company": "Fincart (fincart.io)",
+          "contact": "Mostafa Elmasry",
+          "email": "",
+          "website": "https://fincart.io",
+          "referrer": "Research (Instagram: instagram.com/fincart.io)",
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "Egyptian AI-powered e-commerce logistics/fintech platform, HQ Cairo. Founded 2023 by Mostafa Elmasry (CEO & Co-founder) and Nihal Ali (COO & Co-founder). Connects merchants to 40+ couriers across Africa, handles COD reconciliation, working-capital advances, and AI-driven customer retention. Raised $2.8M Seed (Jul 2026, led by Launch Africa & Antler MENAP) after a Pre-Seed round (Jan 2025, led by Plus VC). Serves 450+ merchants (fashion, cosmetics, electronics). LinkedIn: linkedin.com/company/fincartio. Personal LinkedIn for CEO not confirmed publicly — needs manual lookup/connection request.",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        }
+      ]
     },
     {
       "id": "5a90ec77",
