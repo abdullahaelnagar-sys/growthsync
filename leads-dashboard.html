@@ -278,7 +278,7 @@ function defaultState(){
 
 function newLead(){
   return {
-    id: uid(), company: '', contact: '', email: '', website: '', referrer: '',
+    id: uid(), company: '', contact: '', email: '', website: '', referrer: '', growthLeak: '',
     stage: STAGE_OPTIONS[0], interested: '', type: 'potential', notes: '',
     monthly: Array(12).fill(false), custom: {}, open: true,
   };
@@ -599,6 +599,7 @@ function renderLeadCard(sec, lead, idx){
       </div>
       <div class="field"><label>Lead provider</label><input type="text" data-field="referrer" value="${escapeAttr(lead.referrer)}" placeholder="Who brought in this lead?"></div>
       <div class="field"><label>Notes</label><textarea data-field="notes" placeholder="Notes about this client…">${escapeHtml(lead.notes)}</textarea></div>
+      <div class="field"><label>Growth leak</label><textarea data-field="growthLeak" placeholder="Problems from research that may be holding back this company's growth…">${escapeHtml(lead.growthLeak || '')}</textarea></div>
       <div class="section-label">Monthly follow-up email</div>
       <div class="months-grid" id="months-${lead.id}"></div>
       ${sec.customFields.length ? `<div class="section-label">Additional fields</div><div class="custom-fields" id="custom-${lead.id}"></div>` : ''}
