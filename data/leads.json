@@ -6,6 +6,39 @@
       "customFields": [],
       "leads": [
         {
+          "id": "2hpw1sea",
+          "company": "",
+          "contact": "",
+          "email": "",
+          "website": "",
+          "referrer": "",
+          "growthLeak": [],
+          "social": {
+            "instagram": "",
+            "linkedin": ""
+          },
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
           "id": "ce4610c1",
           "company": "Salasa",
           "contact": "Abdulmajeed Alyemni (Co-founder), Hasan Alhazmi (Co-founder & CBO)",
