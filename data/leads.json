@@ -158,7 +158,9 @@
           "email": "",
           "website": "",
           "referrer": "Abdelrahman mohamed ",
-          "growthLeak": [],
+          "growthLeak": [
+            ""
+          ],
           "social": {
             "instagram": "",
             "linkedin": ""
@@ -166,7 +168,7 @@
           "stage": "First contact",
           "interested": "yes",
           "type": "potential",
-          "notes": "",
+          "notes": "https://www.facebook.com/share/19dumVGAJC/",
           "monthly": [
             false,
             false,
