@@ -448,6 +448,39 @@
       "customFields": [],
       "leads": [
         {
+          "id": "dancp500",
+          "company": "",
+          "contact": "",
+          "email": "",
+          "website": "",
+          "referrer": "",
+          "growthLeak": [],
+          "social": {
+            "instagram": "",
+            "linkedin": ""
+          },
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
           "id": "i1jda0v6",
           "company": "skanysta Real Estate ",
           "contact": "eng hossam elbana",
@@ -462,7 +495,7 @@
           "stage": "First contact",
           "interested": "",
           "type": "potential",
-          "notes": "",
+          "notes": "tech solutions needed mobile app,dashboard,...etc and i sent him a message ",
           "monthly": [
             false,
             false,
