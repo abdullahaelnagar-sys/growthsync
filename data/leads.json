@@ -448,6 +448,39 @@
       "customFields": [],
       "leads": [
         {
+          "id": "i1jda0v6",
+          "company": "",
+          "contact": "",
+          "email": "",
+          "website": "",
+          "referrer": "",
+          "growthLeak": [],
+          "social": {
+            "instagram": "",
+            "linkedin": ""
+          },
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
           "id": "c828b071",
           "company": "Beta Egypt (Beta Real Estate Development)",
           "contact": "Eng. Alaa Fekry / Fikry (Chairman & Managing Director)",
