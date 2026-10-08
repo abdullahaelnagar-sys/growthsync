@@ -152,6 +152,39 @@
       "customFields": [],
       "leads": [
         {
+          "id": "v8qbb1v6",
+          "company": "",
+          "contact": "",
+          "email": "",
+          "website": "",
+          "referrer": "",
+          "growthLeak": [],
+          "social": {
+            "instagram": "",
+            "linkedin": ""
+          },
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
           "id": "5l36j3iu",
           "company": "Aya Nessim writer",
           "contact": "",
