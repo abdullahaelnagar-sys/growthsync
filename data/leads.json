@@ -448,6 +448,39 @@
       "customFields": [],
       "leads": [
         {
+          "id": "qj6yl6ez",
+          "company": "",
+          "contact": "",
+          "email": "",
+          "website": "",
+          "referrer": "",
+          "growthLeak": [],
+          "social": {
+            "instagram": "",
+            "linkedin": ""
+          },
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
           "id": "dancp500",
           "company": "Raya Smart Buildings",
           "contact": "mohamed shamoon",
