@@ -152,6 +152,39 @@
       "customFields": [],
       "leads": [
         {
+          "id": "6x8x7iv8",
+          "company": "",
+          "contact": "",
+          "email": "",
+          "website": "",
+          "referrer": "",
+          "growthLeak": [],
+          "social": {
+            "instagram": "",
+            "linkedin": ""
+          },
+          "stage": "New lead",
+          "interested": "",
+          "type": "potential",
+          "notes": "",
+          "monthly": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "custom": {},
+          "open": true
+        },
+        {
           "id": "v8qbb1v6",
           "company": "Muzain",
           "contact": "",
