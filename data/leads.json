@@ -158,7 +158,9 @@
           "email": "",
           "website": "",
           "referrer": "Abdelrahman Mohamed",
-          "growthLeak": [],
+          "growthLeak": [
+            ""
+          ],
           "social": {
             "instagram": "https://www.facebook.com/share/1DmtY7X1YJ/",
             "linkedin": ""
